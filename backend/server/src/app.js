@@ -16,7 +16,8 @@ import { notFoundHandler, errorHandler } from './middleware/error.middleware.js'
 export function createApp() {
   const app = express();
 
-  app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173' }));
+  //app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173' }));
+  app.use(cors({origin: "*"}));
   app.use(express.json({ limit: '1mb' }));
 
   app.get('/health', (_req, res) => {
