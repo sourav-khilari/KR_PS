@@ -4,7 +4,37 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
   const [blocks, setBlocks] = useState(preview.blocks || []);
   const settings = preview.settings || {};
 
+  function buildSummaryRows(summaryValues = {}) {
+    if (summaryValues.gstApplicable === false) {
+      return [
+        { key: 'taxableValue', label: 'TAXABLE VALUE', value: summaryValues.taxableValue || 0 },
+        { key: 'lessDiesel', label: 'LESS: DIESEL', value: summaryValues.lessDiesel || 0 },
+        { key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summaryValues.lessCashAdvance || 0 },
+        { key: 'lessShortage', label: 'LESS: SHORTAGE', value: summaryValues.lessShortage || 0 },
+        { key: 'lessTds', label: 'LESS: TDS', value: summaryValues.lessTds || 0 },
+        { key: 'roundOff', label: 'ROUND OFF', value: summaryValues.roundOff || 0 },
+        { key: 'netPayable', label: 'NET PAYABLE', value: summaryValues.netPayable || 0 }
+      ];
+    }
+
+    return [
+      { key: 'taxableValue', label: 'TAXABLE VALUE', value: summaryValues.taxableValue || 0 },
+      { key: 'cgst', label: `ADD: CGST @${summaryValues.cgstRate ?? settings.cgstRate ?? 0}%`, value: summaryValues.cgst || 0 },
+      { key: 'sgst', label: `ADD: SGST @${summaryValues.sgstRate ?? settings.sgstRate ?? 0}%`, value: summaryValues.sgst || 0 },
+      { key: 'netBillAmount', label: 'NET BILL AMOUNT', value: summaryValues.netBillAmount || 0 },
+      { key: 'lessDiesel', label: 'LESS: DIESEL', value: summaryValues.lessDiesel || 0 },
+      { key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summaryValues.lessCashAdvance || 0 },
+      { key: 'lessShortage', label: 'LESS: SHORTAGE', value: summaryValues.lessShortage || 0 },
+      { key: 'lessTds', label: 'LESS: TDS', value: summaryValues.lessTds || 0 },
+      { key: 'roundOff', label: 'ROUND OFF', value: summaryValues.roundOff || 0 },
+      { key: 'netPayable', label: 'NET PAYABLE', value: summaryValues.netPayable || 0 }
+    ];
+  }
+
   function recalculateBlock(block, rows) {
+    const gstApplicable = block.summaryValues?.gstApplicable !== false;
+    const cgstRate = Number(block.summaryValues?.cgstRate ?? settings.cgstRate ?? 0);
+    const sgstRate = Number(block.summaryValues?.sgstRate ?? settings.sgstRate ?? 0);
     let totalQty = 0;
     let totalAmount = 0;
     let totalCommission = 0;
@@ -48,17 +78,32 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
     const tdsRate = Math.round(tdsPercentage) || 1;
 
     const taxableValue = totalGross;
-    const cgst = taxableValue * (settings.cgstRate / 100);
-    const sgst = cgst;
+    const cgst = gstApplicable ? taxableValue * (cgstRate / 100) : 0;
+    const sgst = gstApplicable ? taxableValue * (sgstRate / 100) : 0;
     const netBillAmount = taxableValue + cgst + sgst;
     const lessDiesel = totalDiesel;
     const lessCashAdvance = totalCashAdvance;
     const lessShortage = totalShortage;
     const lessTds = Math.round(taxableValue * (tdsRate / 100));
 
-    const unroundedNetPayable = netBillAmount - lessDiesel - lessCashAdvance - lessShortage - lessTds;
+    const unroundedNetPayable = (gstApplicable ? netBillAmount : taxableValue) - lessDiesel - lessCashAdvance - lessShortage - lessTds;
     const netPayable = Math.round(unroundedNetPayable);
     const roundOff = netPayable - unroundedNetPayable;
+    const summaryRows = buildSummaryRows({
+      gstApplicable,
+      taxableValue,
+      cgstRate,
+      sgstRate,
+      cgst,
+      sgst,
+      netBillAmount,
+      lessDiesel,
+      lessCashAdvance,
+      lessShortage,
+      lessTds,
+      roundOff,
+      netPayable
+    });
 
     return {
       ...block,
@@ -76,7 +121,13 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
         totalGst: cgst + sgst,
         totalNetPayable: netPayable
       },
+      summaryRows,
       summaryValues: {
+        gstApplicable,
+        cgstRate,
+        sgstRate,
+        cgstAmount: cgst,
+        sgstAmount: sgst,
         taxableValue,
         cgst,
         sgst,
@@ -315,48 +366,20 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
             <h5>Calculation Breakdown</h5>
             <div className="summary-split-grid">
               <div className="summary-left-side">
-                <div>
-                  <span>TAXABLE VALUE</span>
-                  <strong>{block.summaryValues.taxableValue}</strong>
-                </div>
-                <div>
-                  <span>ADD: CGST @{settings.cgstRate}%</span>
-                  <strong>{block.summaryValues.cgst.toFixed(2)}</strong>
-                </div>
-                <div>
-                  <span>ADD: SGST @{settings.sgstRate}%</span>
-                  <strong>{block.summaryValues.sgst.toFixed(2)}</strong>
-                </div>
-                <div className="strong-total">
-                  <span>NET BILL AMOUNT</span>
-                  <strong>{block.summaryValues.netBillAmount.toFixed(2)}</strong>
-                </div>
+                {buildSummaryRows(block.summaryValues).slice(0, block.summaryValues?.gstApplicable === false ? 1 : 4).map((row) => (
+                  <div key={row.key} className={row.key === 'netBillAmount' ? 'strong-total' : ''}>
+                    <span>{row.label}</span>
+                    <strong>{Number(row.value).toFixed(2)}</strong>
+                  </div>
+                ))}
               </div>
               <div className="summary-right-side">
-                <div>
-                  <span>LESS: DIESEL</span>
-                  <strong>-{block.summaryValues.lessDiesel}</strong>
-                </div>
-                <div>
-                  <span>LESS: CASH ADVANCE</span>
-                  <strong>-{block.summaryValues.lessCashAdvance}</strong>
-                </div>
-                <div>
-                  <span>LESS: SHORTAGE</span>
-                  <strong>-{block.summaryValues.lessShortage}</strong>
-                </div>
-                <div>
-                  <span>LESS: TDS</span>
-                  <strong>-{block.summaryValues.lessTds}</strong>
-                </div>
-                <div>
-                  <span>ROUND OFF</span>
-                  <strong>{block.summaryValues.roundOff.toFixed(2)}</strong>
-                </div>
-                <div className="payable-highlight">
-                  <span>NET PAYABLE</span>
-                  <strong>₹{block.summaryValues.netPayable}</strong>
-                </div>
+                {buildSummaryRows(block.summaryValues).slice(block.summaryValues?.gstApplicable === false ? 1 : 4).map((row) => (
+                  <div key={row.key} className={row.key === 'netPayable' ? 'payable-highlight' : ''}>
+                    <span>{row.label}</span>
+                    <strong>{row.key === 'netPayable' ? `₹${Number(row.value).toFixed(0)}` : `-${Number(row.value).toFixed(2)}`}</strong>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

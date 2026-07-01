@@ -6,7 +6,6 @@ export function MasterSettingsPage({ token }) {
     companyName: 'SHREE CEMENT LTD.',
     companyGstin: '',
     plantName: 'PURULIA',
-    gstRate: 18,
     cgstRate: 9,
     sgstRate: 9,
     defaultRoundingRule: 'round'
@@ -28,7 +27,6 @@ export function MasterSettingsPage({ token }) {
             companyName: data.companyName || 'SHREE CEMENT LTD.',
             companyGstin: data.companyGstin || '',
             plantName: data.plantName || 'PURULIA',
-            gstRate: data.gstRate ?? 18,
             cgstRate: data.cgstRate ?? 9,
             sgstRate: data.sgstRate ?? 9,
             defaultRoundingRule: data.defaultRoundingRule || 'round'
@@ -44,16 +42,7 @@ export function MasterSettingsPage({ token }) {
   }, [token]);
 
   function handleChange(field, val) {
-    setSettings(prev => {
-      const updated = { ...prev, [field]: val };
-      // Auto split CGST/SGST if gstRate is updated
-      if (field === 'gstRate') {
-        const rate = val === '' ? 0 : Number(val);
-        updated.cgstRate = rate / 2;
-        updated.sgstRate = rate / 2;
-      }
-      return updated;
-    });
+    setSettings(prev => ({ ...prev, [field]: val }));
   }
 
   async function handleSave(e) {
@@ -65,7 +54,6 @@ export function MasterSettingsPage({ token }) {
     try {
       const payload = {
         ...settings,
-        gstRate: Number(settings.gstRate),
         cgstRate: Number(settings.cgstRate),
         sgstRate: Number(settings.sgstRate)
       };
@@ -87,7 +75,7 @@ export function MasterSettingsPage({ token }) {
     <div className="master-settings-page" style={{ maxWidth: '600px' }}>
       <div className="master-header" style={{ marginBottom: '24px' }}>
         <h2>Company & Payment Settings</h2>
-        <p>Configure tax rates, billing entity names, and calculation rules used in invoice sheets.</p>
+        <p>Configure CGST, SGST, billing entity names, and calculation rules used in invoice sheets.</p>
       </div>
 
       {success && <div className="alert success">{success}</div>}
@@ -125,34 +113,25 @@ export function MasterSettingsPage({ token }) {
 
         <div className="master-grid-2" style={{ gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <div className="form-group">
-            <label>GST Rate (%)</label>
+            <label>CGST Rate (%)</label>
             <input
               type="number"
               step="0.1"
               min="0"
-              value={settings.gstRate}
-              onChange={e => handleChange('gstRate', e.target.value === '' ? '' : Number(e.target.value))}
+              value={settings.cgstRate}
+              onChange={e => handleChange('cgstRate', e.target.value === '' ? '' : Number(e.target.value))}
             />
           </div>
 
           <div className="form-group">
-            <label>CGST / SGST split (%)</label>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <input
-                type="number"
-                disabled
-                value={settings.cgstRate}
-                style={{ flex: 1, background: '#334155', color: '#94a3b8' }}
-              />
-              <span>+</span>
-              <input
-                type="number"
-                disabled
-                value={settings.sgstRate}
-                style={{ flex: 1, background: '#334155', color: '#94a3b8' }}
-              />
-            </div>
-            <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>Automatically split 50/50</span>
+            <label>SGST Rate (%)</label>
+            <input
+              type="number"
+              step="0.1"
+              min="0"
+              value={settings.sgstRate}
+              onChange={e => handleChange('sgstRate', e.target.value === '' ? '' : Number(e.target.value))}
+            />
           </div>
         </div>
 
@@ -171,7 +150,7 @@ export function MasterSettingsPage({ token }) {
         <div className="commission-preview-help" style={{ marginTop: '12px' }}>
           <strong>ℹ Settings Lifetime</strong>
           <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#cbd5e1' }}>
-            Changing company details or tax split rules updates calculations dynamically on load rows. Older, saved finalized payment runs remain locked to their snapshot values.
+            Changing company details or CGST/SGST rates updates calculations for future payment previews only. Older, saved finalized payment runs remain locked to their snapshot values.
           </p>
         </div>
 

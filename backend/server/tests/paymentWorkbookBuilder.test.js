@@ -31,13 +31,33 @@ function block(ownerName, rows) {
   return {
     ownerNameSnapshot: ownerName,
     ownerPanSnapshot: 'ABCDE1234F',
+    gstApplicableSnapshot: true,
+    cgstRateSnapshot: 9,
+    sgstRateSnapshot: 9,
     rows,
     totals: {
       totalQty: sum('qty'), totalAmount: sum('amount'), totalCommission: sum('comm'),
       totalGross: sum('gross'), totalShortage: sum('bagShortage'), totalDiesel: sum('diesel'),
       totalCashAdvance: sum('cashAdvance'), totalRfidGps: sum('rfidGps')
     },
+    summaryRows: [
+      { templateRow: 10, key: 'taxableValue', label: 'TAXABLE VALUE', value: sum('gross') },
+      { templateRow: 11, key: 'cgst', label: 'ADD: CGST @9%', value: 819 },
+      { templateRow: 12, key: 'sgst', label: 'ADD: SGST @9%', value: 819 },
+      { templateRow: 13, key: 'netBillAmount', label: 'NET BILL AMOUNT', value: 10738 },
+      { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: sum('diesel') },
+      { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: sum('cashAdvance') },
+      { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: sum('bagShortage') },
+      { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: 91 },
+      { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: 0 },
+      { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: sum('netAmount') }
+    ],
     summaryValues: {
+      gstApplicable: true,
+      cgstRate: 9,
+      sgstRate: 9,
+      cgstAmount: 819,
+      sgstAmount: 819,
       taxableValue: sum('gross'), cgst: 819, sgst: 819, netBillAmount: 10738,
       lessDiesel: sum('diesel'), lessCashAdvance: sum('cashAdvance'), lessShortage: sum('bagShortage'),
       lessTds: 91, roundOff: 0, netPayable: sum('netAmount')
@@ -102,11 +122,51 @@ describe('template payment workbook builder', () => {
 
     expect(workbook.worksheets).toHaveLength(3);
     expect(combined.getCell(`F${firstTotalRow}`).value).toBe(1050);
-    expect(combined.getCell(`A${secondBlockStart + 1}`).value).toContain('Second Owner');
+    expect(combined.getCell(`A${secondBlockStart}`).value).toContain('Second Owner');
     expect(combined.getCell(`C${secondBlockStart + 5}`).value).toBe('WB11AA1111');
     expect(workbook.getWorksheet('Large Owner').getCell('C110').value).toBe(largeRows[104].truckNo);
     expect(workbook.getWorksheet('Second Owner').getCell('I6').value).toBe(900);
     expect(workbook.getWorksheet('Second Owner').getCell('I7').value).toBe(0);
     expect(workbookPlaceholders(workbook)).toEqual([]);
+  });
+
+  it('omits GST rows when the snapshot says GST is not applicable', async () => {
+    const ownerBlock = block('No GST Owner', [trip()]);
+    ownerBlock.gstApplicableSnapshot = false;
+    ownerBlock.summaryRows = [
+      { templateRow: 10, key: 'taxableValue', label: 'TAXABLE VALUE', value: 9100 },
+      { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: 100 },
+      { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: 200 },
+      { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: 0 },
+      { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: 91 },
+      { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: 0 },
+      { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: 8709 }
+    ];
+    ownerBlock.summaryValues = {
+      gstApplicable: false,
+      cgstRate: 9,
+      sgstRate: 9,
+      cgstAmount: 0,
+      sgstAmount: 0,
+      taxableValue: 9100,
+      cgst: 0,
+      sgst: 0,
+      netBillAmount: 9100,
+      lessDiesel: 100,
+      lessCashAdvance: 200,
+      lessShortage: 0,
+      lessTds: 91,
+      roundOff: 0,
+      netPayable: 8709
+    };
+
+    const { excelBuffer } = await buildPaymentWorkbook({ run, blocks: [ownerBlock] });
+    const workbook = await readBuffer(excelBuffer);
+    const combined = workbook.getWorksheet('Combined Payment Sheet');
+
+    expect(combined.getCell('D10').value).toBe(9100);
+    expect(combined.getCell('D11').value).toBe(100);
+    expect(combined.getCell('D12').value).toBe(200);
+    expect(combined.getCell('D16').value).toBe(8709);
   });
 });

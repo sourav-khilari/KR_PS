@@ -105,7 +105,7 @@ export function OwnerMasterPage({ token, selectedOwnerFromDashboard, onDrawerClo
       <div className="master-header" style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h2>Owner Management</h2>
-          <p>Register truck owners, configure PAN, tax deduction rates (TDS), and commission modes.</p>
+          <p>Register truck owners, configure PAN, GST registration status, tax deduction rates (TDS), and commission modes.</p>
         </div>
         <button type="button" className="action-btn" onClick={handleOpenCreate}>
           + Add Owner
@@ -145,6 +145,7 @@ export function OwnerMasterPage({ token, selectedOwnerFromDashboard, onDrawerClo
                 <tr>
                   <th>Owner Name</th>
                   <th>PAN Number</th>
+                  <th>GST Applicable</th>
                   <th>TDS Rate</th>
                   <th>Commission Rule</th>
                   <th>Status</th>
@@ -171,6 +172,11 @@ export function OwnerMasterPage({ token, selectedOwnerFromDashboard, onDrawerClo
                         ) : (
                           <span className="badge danger">Missing PAN</span>
                         )}
+                      </td>
+                      <td>
+                        <span className={`badge ${owner.gstApplicable === false ? 'warning' : 'success'}`}>
+                          {owner.gstApplicable === false ? 'No' : 'Yes'}
+                        </span>
                       </td>
                       <td>{owner.tdsPercentage ?? 0}%</td>
                       <td>

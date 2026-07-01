@@ -22,6 +22,10 @@ const ownerMasterSchema = new mongoose.Schema(
       uppercase: true,
       default: ''
     },
+    gstApplicable: {
+      type: Boolean,
+      default: true
+    },
     mobileNumber: {
       type: String,
       trim: true,

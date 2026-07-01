@@ -53,6 +53,7 @@ export async function updateOwner(id, payload, currentUser) {
   const merged = {
     ownerName: existing.ownerName,
     panNumber: existing.panNumber,
+    gstApplicable: existing.gstApplicable,
     mobileNumber: existing.mobileNumber,
     address: existing.address,
     tdsPercentage: existing.tdsPercentage,

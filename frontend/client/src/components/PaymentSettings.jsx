@@ -13,7 +13,6 @@ export function PaymentSettings() {
     companyName: '',
     companyGstin: '',
     plantName: '',
-    gstRate: 18,
     cgstRate: 9,
     sgstRate: 9
   });
@@ -56,7 +55,6 @@ export function PaymentSettings() {
     try {
       const parsed = {
         ...globalSettings,
-        gstRate: Number(globalSettings.gstRate) || 0,
         cgstRate: Number(globalSettings.cgstRate) || 0,
         sgstRate: Number(globalSettings.sgstRate) || 0
       };
@@ -155,43 +153,33 @@ export function PaymentSettings() {
             </label>
             <div className="form-row-2">
               <label>
-                <span>GST Rate (%)</span>
-                <input
-                  type="number"
-                  value={globalSettings.gstRate || 0}
-                  onChange={(e) => setGlobalSettings({ ...globalSettings, gstRate: e.target.value })}
-                />
-              </label>
-              <label>
-                <span>CGST Split (%)</span>
+                <span>CGST Rate (%)</span>
                 <input
                   type="number"
                   value={globalSettings.cgstRate || 0}
                   onChange={(e) => setGlobalSettings({ ...globalSettings, cgstRate: e.target.value })}
                 />
               </label>
-            </div>
-            <div className="form-row-2">
               <label>
-                <span>SGST Split (%)</span>
+                <span>SGST Rate (%)</span>
                 <input
                   type="number"
                   value={globalSettings.sgstRate || 0}
                   onChange={(e) => setGlobalSettings({ ...globalSettings, sgstRate: e.target.value })}
                 />
               </label>
-              <label>
-                <span>Rounding Mode</span>
-                <select
-                  value={globalSettings.defaultRoundingRule || 'round'}
-                  onChange={(e) => setGlobalSettings({ ...globalSettings, defaultRoundingRule: e.target.value })}
-                >
-                  <option value="round">Round to nearest whole number</option>
-                  <option value="half_up">Round half up</option>
-                  <option value="none">No rounding</option>
-                </select>
-              </label>
             </div>
+            <label>
+              <span>Rounding Mode</span>
+              <select
+                value={globalSettings.defaultRoundingRule || 'round'}
+                onChange={(e) => setGlobalSettings({ ...globalSettings, defaultRoundingRule: e.target.value })}
+              >
+                <option value="round">Round to nearest whole number</option>
+                <option value="half_up">Round half up</option>
+                <option value="none">No rounding</option>
+              </select>
+            </label>
             <button type="submit" className="submit-btn" disabled={loading}>
               Save Global Rules
             </button>

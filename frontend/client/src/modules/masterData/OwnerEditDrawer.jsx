@@ -5,6 +5,7 @@ export function OwnerEditDrawer({ owner, onClose, onSave, token }) {
   const [form, setForm] = useState({
     ownerName: '',
     panNumber: '',
+    gstApplicable: true,
     mobileNumber: '',
     address: '',
     tdsPercentage: 1,
@@ -66,6 +67,7 @@ export function OwnerEditDrawer({ owner, onClose, onSave, token }) {
       setForm({
         ownerName: owner.ownerName || '',
         panNumber: owner.panNumber || '',
+        gstApplicable: owner.gstApplicable !== false,
         mobileNumber: owner.mobileNumber || '',
         address: owner.address || '',
         tdsPercentage: owner.tdsPercentage ?? 1,
@@ -92,6 +94,7 @@ export function OwnerEditDrawer({ owner, onClose, onSave, token }) {
       setForm({
         ownerName: '',
         panNumber: '',
+        gstApplicable: true,
         mobileNumber: '',
         address: '',
         tdsPercentage: 1,
@@ -238,6 +241,18 @@ export function OwnerEditDrawer({ owner, onClose, onSave, token }) {
               />
               {panError && <span className="input-error">{panError}</span>}
               {form.panNumber && !panError && <span className="badge success" style={{ alignSelf: 'flex-start', marginTop: '4px' }}>✓ Valid Format</span>}
+            </div>
+
+            <div className="form-group">
+              <label>GST Applicable</label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={form.gstApplicable}
+                  onChange={e => handleChange('gstApplicable', e.target.checked)}
+                />
+                <span>Yes, this owner is GST registered</span>
+              </label>
             </div>
 
             <div className="form-group">

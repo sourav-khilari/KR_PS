@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import mongoose from 'mongoose';
-import { getPaymentPreview, savePaymentRun } from '../src/services/paymentGeneration.service.js';
+import { getPaymentPreview, savePaymentRun, updateSettings } from '../src/services/paymentGeneration.service.js';
 
 // ── Hoisted mock functions ──────────────────────────────────────────────────
 const mocks = vi.hoisted(() => ({
@@ -65,6 +65,7 @@ function makeOwner(overrides = {}) {
     ownerName: 'Owner A',
     normalizedOwnerName: 'OWNER A',
     panNumber: 'ABCDE1234F',
+    gstApplicable: true,
     tdsPercentage: 1,
     commissionType: 'fixed',
     commissionValue: 900,
@@ -172,6 +173,41 @@ describe('Payment generation workflow & business calculations', () => {
     const expectedCgst = Math.round(49100 * 0.09 * 100) / 100;
     expect(block.summaryValues.cgst).toBeCloseTo(expectedCgst, 0);
     expect(block.summaryValues.netPayable).toBe(46447);
+  });
+
+  it('omits GST rows and computes payable without GST when owner is not GST applicable', async () => {
+    const owner = makeOwner({ gstApplicable: false, commissionValue: 900 });
+
+    mocks.ownerMasterFind.mockResolvedValue([owner]);
+    mocks.truckMasterFindOne.mockImplementation(() => ({
+      populate: vi.fn().mockResolvedValue({ ownerId: owner })
+    }));
+
+    const row = makeLoadRow('WB60A1234', new Date('2026-05-10T00:00:00.000Z'), {
+      qty: 30,
+      frtAmt: 30000,
+      dieselAmount: 2000,
+      lessAdvance: 5000,
+      rfid: 100,
+      gps: 50
+    });
+    mocks.loadRowFind.mockResolvedValue([row]);
+
+    const preview = await getPaymentPreview({
+      startDate: '2026-05-01',
+      endDate: '2026-05-31',
+      transportCompanyId: 'transport-1',
+      clientCompanyId: 'client-1',
+      plantId: 'plant-1'
+    });
+
+    const block = preview.blocks[0];
+    expect(block.summaryValues.gstApplicable).toBe(false);
+    expect(block.summaryValues.cgst).toBe(0);
+    expect(block.summaryValues.sgst).toBe(0);
+    expect(block.summaryRows).toHaveLength(7);
+    expect(block.summaryRows.map((item) => item.label)).not.toContain('ADD: CGST @9%');
+    expect(block.summaryValues.netPayable).toBe(Math.round(29100 - 2000 - 5000 - 0 - 291));
   });
 
   // ── Test 2: Commission Master rule resolution order ────────────────────────
@@ -283,5 +319,21 @@ describe('Payment generation workflow & business calculations', () => {
     expect(block.rows[0].commissionUsed.source).toBe('Default Rule');
     expect(block.rows[1].rowValues.comm).toBe(600); // 2% of 30000 — NOT zero
     expect(block.rows[1].commissionUsed.source).toBe('Default Rule'); // percentage doesn't zero out
+  });
+
+  it('updates stored GST settings for future payment runs', async () => {
+    const setting = {
+      cgstRate: 9,
+      sgstRate: 9,
+      save: vi.fn()
+    };
+    mocks.settingFindOne.mockResolvedValue(setting);
+
+    const updated = await updateSettings({ cgstRate: 12, sgstRate: 6 });
+
+    expect(updated.gstRate).toBe(18);
+    expect(updated.cgstRate).toBe(12);
+    expect(updated.sgstRate).toBe(6);
+    expect(setting.save).toHaveBeenCalledTimes(1);
   });
 });

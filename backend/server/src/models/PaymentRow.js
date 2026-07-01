@@ -72,7 +72,12 @@ const paymentRowSchema = new mongoose.Schema(
       fallbackUsed: { type: Boolean, default: false }
     },
     gstUsed: {
-      rate: { type: Number, default: 18 }
+      applicable: { type: Boolean, default: true },
+      cgstRate: { type: Number, default: 0 },
+      sgstRate: { type: Number, default: 0 },
+      cgstAmount: { type: Number, default: 0 },
+      sgstAmount: { type: Number, default: 0 },
+      netBillAmount: { type: Number, default: 0 }
     },
     tdsUsed: {
       rate: { type: Number, default: 1 },

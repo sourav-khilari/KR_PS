@@ -50,6 +50,17 @@ function copyRow(sourceSheet, targetSheet, sourceRowNumber, targetRowNumber) {
   }
 }
 
+function copyRowMerges(sourceSheet, targetSheet, sourceRowNumber, targetRowNumber) {
+  for (const merge of sourceSheet.model.merges || []) {
+    const [startAddress, endAddress] = merge.split(':');
+    const start = parseCellAddress(startAddress);
+    const end = parseCellAddress(endAddress || startAddress);
+    if (start.row === sourceRowNumber && end.row === sourceRowNumber) {
+      targetSheet.mergeCells(targetRowNumber, start.column, targetRowNumber, end.column);
+    }
+  }
+}
+
 function copySheetSettings(sourceSheet, targetSheet) {
   targetSheet.properties = clone(sourceSheet.properties) || {};
   targetSheet.pageSetup = clone(sourceSheet.pageSetup) || {};
@@ -71,6 +82,7 @@ function copyTemplateMerges(sourceSheet, targetSheet, targetStartRow, extraDetai
     const [startAddress, endAddress] = merge.split(':');
     const start = parseCellAddress(startAddress);
     const end = parseCellAddress(endAddress || startAddress);
+    if (start.row >= SUMMARY_START_ROW || end.row >= SUMMARY_START_ROW) continue;
     const mappedStart = mapTemplateRow(start.row, targetStartRow, extraDetailRows);
     const mappedEnd = mapTemplateRow(end.row, targetStartRow, extraDetailRows);
     targetSheet.mergeCells(mappedStart, start.column, mappedEnd, end.column);
@@ -133,21 +145,41 @@ function renderTotals(sheet, rowNumber, block) {
   setNumber(sheet.getCell(rowNumber, 16), rows.reduce((sum, row) => sum + Number(row.rowValues?.netAmount || 0), 0));
 }
 
-function renderSummary(sheet, startRow, block) {
+function renderSummaryRows(templateSheet, targetSheet, startRow, summaryRows) {
+  summaryRows.forEach((rowSpec, index) => {
+    const targetRowNumber = startRow + index;
+    copyRow(templateSheet, targetSheet, rowSpec.templateRow, targetRowNumber);
+    copyRowMerges(templateSheet, targetSheet, rowSpec.templateRow, targetRowNumber);
+    setNumber(targetSheet.getCell(targetRowNumber, 4), rowSpec.value);
+  });
+}
+
+function legacySummaryRows(block) {
   const summary = block.summaryValues || {};
-  const values = [
-    summary.taxableValue,
-    summary.cgst,
-    summary.sgst,
-    summary.netBillAmount,
-    summary.lessDiesel,
-    summary.lessCashAdvance,
-    summary.lessShortage,
-    summary.lessTds,
-    summary.roundOff,
-    summary.netPayable
+  if (summary.gstApplicable === false) {
+    return [
+      { templateRow: 10, key: 'taxableValue', label: 'TAXABLE VALUE', value: summary.taxableValue || 0 },
+      { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: summary.lessDiesel || 0 },
+      { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summary.lessCashAdvance || 0 },
+      { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: summary.lessShortage || 0 },
+      { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: summary.lessTds || 0 },
+      { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: summary.roundOff || 0 },
+      { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: summary.netPayable || 0 }
+    ];
+  }
+
+  return [
+    { templateRow: 10, key: 'taxableValue', label: 'TAXABLE VALUE', value: summary.taxableValue || 0 },
+    { templateRow: 11, key: 'cgst', label: 'ADD: CGST', value: summary.cgst || 0 },
+    { templateRow: 12, key: 'sgst', label: 'ADD: SGST', value: summary.sgst || 0 },
+    { templateRow: 13, key: 'netBillAmount', label: 'NET BILL AMOUNT', value: summary.netBillAmount || 0 },
+    { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: summary.lessDiesel || 0 },
+    { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summary.lessCashAdvance || 0 },
+    { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: summary.lessShortage || 0 },
+    { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: summary.lessTds || 0 },
+    { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: summary.roundOff || 0 },
+    { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: summary.netPayable || 0 }
   ];
-  values.forEach((value, index) => setNumber(sheet.getCell(startRow + index, 4), value));
 }
 
 function headerPlaceholders(run, block) {
@@ -174,8 +206,9 @@ function renderOwnerBlock(templateSheet, targetSheet, run, block, targetStartRow
   const rows = block.rows || [];
   const detailCount = Math.max(rows.length, 1);
   const extraDetailRows = detailCount - 1;
+  const summaryRows = block.summaryRows && block.summaryRows.length ? block.summaryRows : legacySummaryRows(block);
 
-  for (let sourceRow = 1; sourceRow <= TEMPLATE_END_ROW; sourceRow += 1) {
+  for (let sourceRow = 1; sourceRow < SUMMARY_START_ROW; sourceRow += 1) {
     if (sourceRow === DETAIL_ROW) {
       for (let index = 0; index < detailCount; index += 1) {
         copyRow(templateSheet, targetSheet, DETAIL_ROW, targetStartRow + DETAIL_ROW - 1 + index);
@@ -191,12 +224,13 @@ function renderOwnerBlock(templateSheet, targetSheet, run, block, targetStartRow
   }
   copyTemplateMerges(templateSheet, targetSheet, targetStartRow, extraDetailRows);
 
-  const blockEndRow = targetStartRow + TEMPLATE_END_ROW - 1 + extraDetailRows;
+  const summaryStartRow = targetStartRow + SUMMARY_START_ROW - 1 + extraDetailRows;
+  renderSummaryRows(templateSheet, targetSheet, summaryStartRow, summaryRows);
+  const blockEndRow = summaryStartRow + summaryRows.length - 1;
   replacePlaceholders(targetSheet, targetStartRow, blockEndRow, headerPlaceholders(run, block));
   rows.forEach((row, index) => renderTripRow(targetSheet, targetStartRow + DETAIL_ROW - 1 + index, row, index));
   if (rows.length === 0) replacePlaceholders(targetSheet, targetStartRow + DETAIL_ROW - 1, targetStartRow + DETAIL_ROW - 1, {});
   renderTotals(targetSheet, targetStartRow + TOTAL_ROW - 1 + extraDetailRows, block);
-  renderSummary(targetSheet, targetStartRow + SUMMARY_START_ROW - 1 + extraDetailRows, block);
   return blockEndRow;
 }
 

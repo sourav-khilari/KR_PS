@@ -48,7 +48,8 @@ function paymentRow() {
     repeatedTrip: false,
     rowValues: { qty: 10, rate: 1000, amount: 10000, comm: 900, gross: 9100, diesel: 0, cashAdvance: 0, rfidGps: 0, bagShortage: 0, netAmount: 9100 },
     commissionUsed,
-    gstUsed: { rate: 18 }, tdsUsed: { rate: 1, amount: 91 }, netPayableUsed: 9100
+    gstUsed: { applicable: true, cgstRate: 9, sgstRate: 9, cgstAmount: 819, sgstAmount: 819, netBillAmount: 10738 },
+    tdsUsed: { rate: 1, amount: 91 }, netPayableUsed: 9100
   };
 }
 
@@ -68,12 +69,21 @@ describe('payment commission snapshot', () => {
       periodStart: '2026-05-01', periodEnd: '2026-05-31', totals: {},
       blocks: [{
         ownerId: new mongoose.Types.ObjectId(), ownerNameSnapshot: 'Balaji', ownerPanSnapshot: '',
-        totals: {}, summaryValues: {}, rows: [row]
+        gstApplicableSnapshot: true,
+        cgstRateSnapshot: 9,
+        sgstRateSnapshot: 9,
+        totals: {}, summaryRows: [], summaryValues: { gstApplicable: true, cgstRate: 9, sgstRate: 9 }, rows: [row]
       }]
     }, { id: new mongoose.Types.ObjectId() });
 
+    const createdBlockPayload = mocks.paymentBlockCreate.mock.calls[0][0];
+    expect(createdBlockPayload.gstApplicableSnapshot).toBe(true);
+    expect(createdBlockPayload.cgstRateSnapshot).toBe(9);
+    expect(createdBlockPayload.sgstRateSnapshot).toBe(9);
+
     expect(mocks.insertedRows[0].commissionUsed).toEqual(commissionUsed);
     expect(mocks.insertedRows[0].rowValues.comm).toBe(900);
+    expect(mocks.insertedRows[0].gstUsed).toEqual({ applicable: true, cgstRate: 9, sgstRate: 9, cgstAmount: 819, sgstAmount: 819, netBillAmount: 10738 });
   });
 
   it('export reads the saved PaymentRow commission snapshot', async () => {

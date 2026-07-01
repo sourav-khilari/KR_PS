@@ -22,6 +22,18 @@ const paymentBlockSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
+    gstApplicableSnapshot: {
+      type: Boolean,
+      default: true
+    },
+    cgstRateSnapshot: {
+      type: Number,
+      default: 0
+    },
+    sgstRateSnapshot: {
+      type: Number,
+      default: 0
+    },
     status: {
       type: String,
       enum: ['draft', 'approved', 'rejected'],
@@ -40,7 +52,23 @@ const paymentBlockSchema = new mongoose.Schema(
       totalGst: { type: Number, default: 0 },
       totalNetPayable: { type: Number, default: 0 }
     },
+    summaryRows: {
+      type: [
+        {
+          templateRow: { type: Number, required: true },
+          key: { type: String, default: '' },
+          label: { type: String, default: '' },
+          value: { type: Number, default: 0 }
+        }
+      ],
+      default: []
+    },
     summaryValues: {
+      gstApplicable: { type: Boolean, default: true },
+      cgstRate: { type: Number, default: 0 },
+      sgstRate: { type: Number, default: 0 },
+      cgstAmount: { type: Number, default: 0 },
+      sgstAmount: { type: Number, default: 0 },
       taxableValue: { type: Number, default: 0 },
       cgst: { type: Number, default: 0 },
       sgst: { type: Number, default: 0 },

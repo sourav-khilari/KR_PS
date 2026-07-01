@@ -34,6 +34,11 @@ export async function updateSettings(payload) {
     setting = new Setting();
   }
   Object.assign(setting, payload);
+  if (payload && (payload.cgstRate !== undefined || payload.sgstRate !== undefined)) {
+    const cgstRate = Number(setting.cgstRate || 0);
+    const sgstRate = Number(setting.sgstRate || 0);
+    setting.gstRate = cgstRate + sgstRate;
+  }
   await setting.save();
   return setting;
 }
@@ -43,6 +48,51 @@ function toDateValue(value) {
   if (value instanceof Date) return value;
   const parsed = new Date(value);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function toNumber(value) {
+  return Number(Number(value ?? 0).toFixed(2));
+}
+
+function buildSummaryRows({
+  gstApplicable,
+  taxableValue,
+  cgstRate,
+  sgstRate,
+  cgst,
+  sgst,
+  netBillAmount,
+  lessDiesel,
+  lessCashAdvance,
+  lessShortage,
+  lessTds,
+  roundOff,
+  netPayable
+}) {
+  if (gstApplicable) {
+    return [
+      { templateRow: 10, key: 'taxableValue', label: 'TAXABLE VALUE', value: taxableValue },
+      { templateRow: 11, key: 'cgst', label: `ADD: CGST @${cgstRate}%`, value: cgst },
+      { templateRow: 12, key: 'sgst', label: `ADD: SGST @${sgstRate}%`, value: sgst },
+      { templateRow: 13, key: 'netBillAmount', label: 'NET BILL AMOUNT', value: netBillAmount },
+      { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: lessDiesel },
+      { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: lessCashAdvance },
+      { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: lessShortage },
+      { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: lessTds },
+      { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: roundOff },
+      { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: netPayable }
+    ];
+  }
+
+  return [
+    { templateRow: 10, key: 'taxableValue', label: 'TAXABLE VALUE', value: taxableValue },
+    { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: lessDiesel },
+    { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: lessCashAdvance },
+    { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: lessShortage },
+    { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: lessTds },
+    { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: roundOff },
+    { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: netPayable }
+  ];
 }
 
 // Calculate preview of payments
@@ -114,6 +164,7 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
 
   for (const [ownerStrId, group] of Object.entries(ownerGroups)) {
     const owner = group.owner;
+    const gstApplicable = owner.gstApplicable !== false;
     const detailRows = group.rows;
 
     const truckDateGroups = {};
@@ -229,7 +280,12 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
             fallbackUsed: resolvedComm.fallbackUsed
           },
           gstUsed: {
-            rate: settings.gstRate
+            applicable: gstApplicable,
+            cgstRate: Number(settings.cgstRate || 0),
+            sgstRate: Number(settings.sgstRate || 0),
+            cgstAmount: 0,
+            sgstAmount: 0,
+            netBillAmount: 0
           },
           tdsUsed: {
             rate: owner.tdsPercentage,
@@ -257,9 +313,11 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
     const roundedDiesel = Math.round(blockDiesel);
 
     const taxableValue = blockGross;
-    const cgst = Number((taxableValue * (settings.cgstRate / 100)).toFixed(2));
-    const sgst = Number((cgst).toFixed(2));
-    const netBillAmount = Number((taxableValue + cgst + sgst).toFixed(2));
+    const cgstRate = Number(settings.cgstRate || 0);
+    const sgstRate = Number(settings.sgstRate || 0);
+    const cgst = gstApplicable ? toNumber(taxableValue * (cgstRate / 100)) : 0;
+    const sgst = gstApplicable ? toNumber(taxableValue * (sgstRate / 100)) : 0;
+    const netBillAmount = toNumber(taxableValue + cgst + sgst);
 
     // Use rounded diesel for all subsequent calculations
     const lessDiesel = roundedDiesel;
@@ -267,28 +325,58 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
     const lessShortage = Number((blockShortage).toFixed(2));
     const lessTds = Number(Math.round(taxableValue * (owner.tdsPercentage / 100)));
 
-    const unroundedNetPayable = netBillAmount - lessDiesel - lessCashAdvance - lessShortage - lessTds;
+    const unroundedNetPayable = (gstApplicable ? netBillAmount : taxableValue) - lessDiesel - lessCashAdvance - lessShortage - lessTds;
 
     // Net payable is already rounded to whole rupees by existing business rule
     const netPayable = Math.round(unroundedNetPayable);
     const roundOff = netPayable - unroundedNetPayable;
 
     // For preview payload: enforce 2 decimals on summary numeric fields
-    const summaryTaxableValue = Number((taxableValue).toFixed(2));
-    const summaryNetBillAmount = Number((netBillAmount).toFixed(2));
-    const summaryLessDiesel = Number((lessDiesel).toFixed(2));
-    const summaryLessCashAdvance = Number((lessCashAdvance).toFixed(2));
-    const summaryLessShortage = Number((lessShortage).toFixed(2));
-    const summaryLessTds = Number((lessTds).toFixed(2));
-    const summaryCgst = Number((cgst).toFixed(2));
-    const summarySgst = Number((sgst).toFixed(2));
-    const summaryRoundOff = Number((roundOff).toFixed(2));
-    const summaryNetPayable = Number((netPayable).toFixed(2));
+    const summaryTaxableValue = toNumber(taxableValue);
+    const summaryNetBillAmount = toNumber(netBillAmount);
+    const summaryLessDiesel = toNumber(lessDiesel);
+    const summaryLessCashAdvance = toNumber(lessCashAdvance);
+    const summaryLessShortage = toNumber(lessShortage);
+    const summaryLessTds = toNumber(lessTds);
+    const summaryCgst = toNumber(cgst);
+    const summarySgst = toNumber(sgst);
+    const summaryRoundOff = toNumber(roundOff);
+    const summaryNetPayable = toNumber(netPayable);
+
+    const summaryRows = buildSummaryRows({
+      gstApplicable,
+      taxableValue: summaryTaxableValue,
+      cgstRate,
+      sgstRate,
+      cgst: summaryCgst,
+      sgst: summarySgst,
+      netBillAmount: summaryNetBillAmount,
+      lessDiesel: summaryLessDiesel,
+      lessCashAdvance: summaryLessCashAdvance,
+      lessShortage: summaryLessShortage,
+      lessTds: summaryLessTds,
+      roundOff: summaryRoundOff,
+      netPayable: summaryNetPayable
+    });
+
+    paymentRows.forEach((paymentRow) => {
+      paymentRow.gstUsed = {
+        applicable: gstApplicable,
+        cgstRate,
+        sgstRate,
+        cgstAmount: summaryCgst,
+        sgstAmount: summarySgst,
+        netBillAmount: summaryNetBillAmount
+      };
+    });
 
     blocks.push({
       ownerId: owner._id,
       ownerNameSnapshot: owner.ownerName,
       ownerPanSnapshot: owner.panNumber,
+      gstApplicableSnapshot: gstApplicable,
+      cgstRateSnapshot: cgstRate,
+      sgstRateSnapshot: sgstRate,
       rows: paymentRows,
       totals: {
         totalQty: blockQty,
@@ -303,7 +391,13 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
         totalGst: cgst + sgst,
         totalNetPayable: netPayable
       },
+      summaryRows,
       summaryValues: {
+        gstApplicable,
+        cgstRate,
+        sgstRate,
+        cgstAmount: cgst,
+        sgstAmount: sgst,
         taxableValue,
         cgst,
         sgst,
@@ -377,10 +471,14 @@ export async function savePaymentRun(payload, currentUser) {
       ownerId: block.ownerId,
       ownerNameSnapshot: block.ownerNameSnapshot,
       ownerPanSnapshot: block.ownerPanSnapshot,
+      gstApplicableSnapshot: block.gstApplicableSnapshot ?? block.summaryValues?.gstApplicable ?? true,
+      cgstRateSnapshot: block.cgstRateSnapshot ?? block.summaryValues?.cgstRate ?? 0,
+      sgstRateSnapshot: block.sgstRateSnapshot ?? block.summaryValues?.sgstRate ?? 0,
       totals: {
         ...block.totals,
         totalShortage: block.totals.totalShortage ?? 0
       },
+      summaryRows: block.summaryRows || [],
       summaryValues: block.summaryValues,
       status: 'approved'
     });

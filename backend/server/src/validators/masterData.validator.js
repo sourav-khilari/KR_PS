@@ -8,6 +8,17 @@ function numberOrZero(value) {
   return Number(value);
 }
 
+function booleanOrDefault(value, defaultValue = true) {
+  if (value === '' || value === null || value === undefined) return defaultValue;
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['true', '1', 'yes', 'y', 'on'].includes(normalized)) return true;
+    if (['false', '0', 'no', 'n', 'off'].includes(normalized)) return false;
+  }
+  return Boolean(value);
+}
+
 export function isValidPan(value) {
   return PAN_PATTERN.test(normalizePan(value));
 }
@@ -67,6 +78,7 @@ export function validateOwnerPayload(body = {}, options = {}) {
       ownerName,
       normalizedOwnerName: normalizeOwnerName(ownerName),
       panNumber: pan,
+      gstApplicable: booleanOrDefault(body.gstApplicable, true),
       mobileNumber: normalizeText(body.mobileNumber),
       address: normalizeText(body.address),
       tdsPercentage,
