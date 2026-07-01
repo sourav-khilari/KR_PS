@@ -147,6 +147,42 @@ describe('load import service', () => {
     expect(mocks.loadRowInsertMany.mock.calls[0][0][0].plantId).toBe('plant-1');
   });
 
+  it('stores saved row invDate as a Date when finalizing import', async () => {
+    mocks.truckFindOne.mockImplementation((query) => ({
+      populate: vi.fn().mockResolvedValue(
+        query.normalizedTruckNumber === 'JH10DB3312'
+          ? { ownerId: { ownerName: 'Sharma Logistics', panNumber: 'ABCDE1234F' } }
+          : null
+      )
+    }));
+    mocks.loadRowFind.mockResolvedValue([]);
+
+    const preview = await previewLoadImport({
+      fileBuffer: buildWorkbook(),
+      fileName: 'master.xlsx',
+      uploadedBy: 'user-1',
+      createdBy: 'user-1',
+      updatedBy: 'user-1'
+    });
+
+    const validRows = preview.rows.filter((row) => !(row.validationMessages || []).some((item) => item.severity === 'error'));
+
+    await finalizeImportSession(
+      {
+        fileName: preview.session.fileName,
+        transportCompanyId: 'transport-1',
+        clientCompanyId: 'client-1',
+        plantId: 'plant-1',
+        sheetNames: preview.session.sheetNames,
+        rows: validRows
+      },
+      { id: 'user-1' }
+    );
+
+    const savedRow = mocks.loadRowInsertMany.mock.calls[0][0][0];
+    expect(savedRow.normalizedRow.invDate).toBeInstanceOf(Date);
+  });
+
   it('rejects finalize when duplicate invoice numbers exist before save', async () => {
     mocks.truckFindOne.mockImplementation((query) => ({
       populate: vi.fn().mockResolvedValue(

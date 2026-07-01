@@ -12,13 +12,20 @@ import { PaymentRow } from '../models/PaymentRow.js';
 
 export async function getPreviewHandler(req, res, next) {
   try {
-    const { startDate, endDate, ownerId } = req.query;
-    if (!startDate || !endDate) {
-      const err = new Error('startDate and endDate are required');
+    const { startDate, endDate, ownerId, transportCompanyId, clientCompanyId, plantId } = req.query;
+    if (!startDate || !endDate || !transportCompanyId || !clientCompanyId || !plantId) {
+      const err = new Error('startDate, endDate, transportCompanyId, clientCompanyId, and plantId are required');
       err.statusCode = 400;
       throw err;
     }
-    const result = await getPaymentPreview({ startDate, endDate, ownerId });
+    const result = await getPaymentPreview({
+      startDate,
+      endDate,
+      ownerId,
+      transportCompanyId,
+      clientCompanyId,
+      plantId
+    });
     res.json(result);
   } catch (error) {
     next(error);

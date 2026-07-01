@@ -9,7 +9,6 @@ import { useAuth } from './modules/auth/AuthContext.jsx';
 import { MasterManagementShell } from './modules/masterData/MasterManagementShell.jsx';
 import {
   listClientCompanies,
-  listImportSessions,
   listPlants,
   listTransportCompanies,
   previewMasterImport,
@@ -27,8 +26,6 @@ function Workspace() {
   const [transportCompanies, setTransportCompanies] = useState([]);
   const [clientCompanies, setClientCompanies] = useState([]);
   const [plants, setPlants] = useState([]);
-  const [importSessions, setImportSessions] = useState([]);
-  const [activeSessionId, setActiveSessionId] = useState(null);
 
   const rows = preview?.rows || [];
   const messages = useMemo(() => rows.flatMap((row) => row.validationMessages || []), [rows]);
@@ -199,23 +196,8 @@ function Workspace() {
     }
   }
 
-  async function fetchImportSessions() {
-    try {
-      const sessions = await listImportSessions(token);
-      setImportSessions(sessions || []);
-    } catch (error) {
-      console.error('Failed to fetch import sessions', error);
-    }
-  }
-
-  async function handleSelectSession(sessionId) {
-    setActiveSessionId(sessionId);
-    await refreshSession(sessionId);
-  }
-
   useEffect(() => {
     fetchTransportMasterOptions();
-    fetchImportSessions();
   }, [token]);
 
   return (
@@ -264,61 +246,6 @@ function Workspace() {
       <section className="workspace">
         {activeMainTab === 'imports' ? (
           <>
-            <section className="panel-surface import-history-panel">
-              <div className="section-header compact">
-                <div>
-                  <p className="eyebrow">Session history</p>
-                  <h2>Import Sessions</h2>
-                </div>
-                <button type="button" onClick={fetchImportSessions} disabled={isLoading}>
-                  Refresh
-                </button>
-              </div>
-              <div className="table-shell">
-                {importSessions.length === 0 ? (
-                  <div className="empty-state compact">
-                    <p>No import sessions yet.</p>
-                  </div>
-                ) : (
-                  <table className="data-table compact-table">
-                    <thead>
-                      <tr>
-                        <th>File</th>
-                        <th>Status</th>
-                        <th>Rows</th>
-                        <th>Valid</th>
-                        <th>Warnings</th>
-                        <th>Errors</th>
-                        <th>Transport</th>
-                        <th>Client</th>
-                        <th>Plant</th>
-                        <th>Uploaded</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {importSessions.map((session) => (
-                        <tr
-                          key={session._id}
-                          className={activeSessionId === session._id ? 'selected-row' : ''}
-                          onClick={() => handleSelectSession(session._id)}
-                        >
-                          <td>{session.fileName}</td>
-                          <td><span className="status-pill pending">{session.status}</span></td>
-                          <td>{session.rowCount}</td>
-                          <td>{session.validCount}</td>
-                          <td>{session.warningCount}</td>
-                          <td>{session.errorCount}</td>
-                          <td>{session.transportCompanyId?.companyName || '-'}</td>
-                          <td>{session.clientCompanyId?.companyName || '-'}</td>
-                          <td>{session.plantId?.plantName || '-'}</td>
-                          <td>{new Date(session.createdAt).toLocaleString()}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            </section>
             <UploadPage
               onPreview={handlePreview}
               isLoading={isLoading}

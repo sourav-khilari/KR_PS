@@ -203,6 +203,25 @@ describe('Payment generation workflow & business calculations', () => {
     expect(mocks.loadRowFind.mock.calls[0][0]['normalizedRow.invDate'].$lte).toBeInstanceOf(Date);
   });
 
+  it('returns an empty preview message when no imported rows match the selected filters', async () => {
+    mocks.ownerMasterFind.mockResolvedValue([]);
+    mocks.loadRowFind.mockResolvedValue([]);
+
+    const preview = await getPaymentPreview({
+      startDate: '2026-06-01',
+      endDate: '2026-06-30',
+      transportCompanyId: 'transport-a',
+      clientCompanyId: 'client-a',
+      plantId: 'plant-a'
+    });
+
+    expect(preview.blocks).toHaveLength(0);
+    expect(preview.previewMeta.matchedRows).toBe(0);
+    expect(preview.previewMeta.matchedOwners).toBe(0);
+    expect(preview.previewMeta.paymentBlocks).toBe(0);
+    expect(preview.previewMeta.message).toBe('No imported records found for the selected Transport Company, Client Company, Plant and Date Range.');
+  });
+
   it('omits GST rows and computes payable without GST when owner is not GST applicable', async () => {
     const owner = makeOwner({ gstApplicable: false, commissionValue: 900 });
 
@@ -272,7 +291,13 @@ describe('Payment generation workflow & business calculations', () => {
       }
     ]);
 
-    let preview = await getPaymentPreview({ startDate: '2026-05-01', endDate: '2026-05-31' });
+    let preview = await getPaymentPreview({
+      startDate: '2026-05-01',
+      endDate: '2026-05-31',
+      transportCompanyId: 'transport-1',
+      clientCompanyId: 'client-1',
+      plantId: 'plant-1'
+    });
     let payRow = preview.blocks[0].rows[0];
     expect(payRow.rowValues.comm).toBe(1500);
     expect(payRow.commissionUsed.source).toBe('Truck Rule');
@@ -294,7 +319,13 @@ describe('Payment generation workflow & business calculations', () => {
       }
     ]);
 
-    preview = await getPaymentPreview({ startDate: '2026-05-01', endDate: '2026-05-31' });
+    preview = await getPaymentPreview({
+      startDate: '2026-05-01',
+      endDate: '2026-05-31',
+      transportCompanyId: 'transport-1',
+      clientCompanyId: 'client-1',
+      plantId: 'plant-1'
+    });
     payRow = preview.blocks[0].rows[0];
     expect(payRow.rowValues.comm).toBe(800);
     expect(payRow.commissionUsed.source).toBe('Default Rule');
@@ -302,7 +333,13 @@ describe('Payment generation workflow & business calculations', () => {
     // Case 3: Owner Default — no rules at all
     mocks.commissionRuleFind.mockResolvedValue([]);
 
-    preview = await getPaymentPreview({ startDate: '2026-05-01', endDate: '2026-05-31' });
+    preview = await getPaymentPreview({
+      startDate: '2026-05-01',
+      endDate: '2026-05-31',
+      transportCompanyId: 'transport-1',
+      clientCompanyId: 'client-1',
+      plantId: 'plant-1'
+    });
     payRow = preview.blocks[0].rows[0];
     expect(payRow.rowValues.comm).toBe(900);
     expect(payRow.commissionUsed.source).toBe('Owner Default');
@@ -339,7 +376,13 @@ describe('Payment generation workflow & business calculations', () => {
       }
     ]);
 
-    const preview = await getPaymentPreview({ startDate: '2026-05-01', endDate: '2026-05-31' });
+    const preview = await getPaymentPreview({
+      startDate: '2026-05-01',
+      endDate: '2026-05-31',
+      transportCompanyId: 'transport-1',
+      clientCompanyId: 'client-1',
+      plantId: 'plant-1'
+    });
     const block = preview.blocks[0];
 
     expect(block.rows).toHaveLength(2);

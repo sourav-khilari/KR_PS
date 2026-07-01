@@ -61,6 +61,16 @@ function normalizeEditedField(key, value) {
   }
 }
 
+function normalizeSavedRowFields(normalizedRow = {}) {
+  const normalized = { ...normalizedRow };
+  ['invDate', 'billDate', 'cashAdvanceDate'].forEach((field) => {
+    if (normalized[field] !== null && normalized[field] !== undefined) {
+      normalized[field] = parseMaybeDate(normalized[field]);
+    }
+  });
+  return normalized;
+}
+
 async function refreshSessionCounts(sessionId) {
   const rows = await LoadRow.find({ importSessionId: sessionId });
   const counts = rows.reduce(
@@ -392,7 +402,7 @@ export async function finalizeImportSession(payload, currentUser) {
       sourceSheetName: row.sourceSheetName || row.sheetName || '',
       sourceRowNumber: row.sourceRowNumber ?? row.rowNumber,
       rawRow: row.rawRow,
-      normalizedRow: row.normalizedRow,
+      normalizedRow: normalizeSavedRowFields(row.normalizedRow),
       validationMessages: row.validationMessages,
       editStatus: row.editStatus,
       approvalStatus: row.approvalStatus,

@@ -135,7 +135,10 @@ describe('Commission Master Rule Resolutions and Calculations', () => {
 
     let preview = await getPaymentPreview({
       startDate: '2026-06-01',
-      endDate: '2026-06-30'
+      endDate: '2026-06-30',
+      transportCompanyId: 'transport-x',
+      clientCompanyId: 'client-x',
+      plantId: 'plant-x'
     });
 
     let row = preview.blocks[0].rows[0];
@@ -161,7 +164,10 @@ describe('Commission Master Rule Resolutions and Calculations', () => {
 
     preview = await getPaymentPreview({
       startDate: '2026-06-01',
-      endDate: '2026-06-30'
+      endDate: '2026-06-30',
+      transportCompanyId: 'transport-x',
+      clientCompanyId: 'client-x',
+      plantId: 'plant-x'
     });
 
     row = preview.blocks[0].rows[0];
@@ -172,7 +178,10 @@ describe('Commission Master Rule Resolutions and Calculations', () => {
     mocks.commissionRuleFind.mockResolvedValue([]);
     preview = await getPaymentPreview({
       startDate: '2026-06-01',
-      endDate: '2026-06-30'
+      endDate: '2026-06-30',
+      transportCompanyId: 'transport-x',
+      clientCompanyId: 'client-x',
+      plantId: 'plant-x'
     });
 
     row = preview.blocks[0].rows[0];
@@ -242,7 +251,10 @@ describe('Commission Master Rule Resolutions and Calculations', () => {
 
     const preview = await getPaymentPreview({
       startDate: '2026-06-01',
-      endDate: '2026-06-30'
+      endDate: '2026-06-30',
+      transportCompanyId: 'transport-x',
+      clientCompanyId: 'client-x',
+      plantId: 'plant-x'
     });
 
     expect(preview.blocks[0].rows).toHaveLength(2);

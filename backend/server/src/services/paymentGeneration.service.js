@@ -95,25 +95,43 @@ function buildSummaryRows({
   ];
 }
 
-// Calculate preview of payments
-export async function getPaymentPreview({ startDate, endDate, ownerId, transportCompanyId, clientCompanyId, plantId }) {
-  const settings = await getSettings();
-  const activeRules = await CommissionRule.find({ status: 'active' });
-
-  // Find all approved LoadRows in the range
-  const filter = {
+function buildPaymentPreviewQuery({ startDate, endDate, transportCompanyId, clientCompanyId, plantId }) {
+  return {
     'normalizedRow.invDate': {
       $gte: new Date(startDate),
       $lte: new Date(endDate)
     },
-    approvalStatus: 'approved'
+    approvalStatus: 'approved',
+    transportCompanyId,
+    clientCompanyId,
+    plantId
   };
+}
 
-  if (transportCompanyId) filter.transportCompanyId = transportCompanyId;
-  if (clientCompanyId) filter.clientCompanyId = clientCompanyId;
-  if (plantId) filter.plantId = plantId;
+// Calculate preview of payments
+export async function getPaymentPreview({ startDate, endDate, ownerId, transportCompanyId, clientCompanyId, plantId }) {
+  if (!startDate || !endDate || !transportCompanyId || !clientCompanyId || !plantId) {
+    const error = new Error('startDate, endDate, transportCompanyId, clientCompanyId, and plantId are required');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const settings = await getSettings();
+  const activeRules = await CommissionRule.find({ status: 'active' });
+  const filter = buildPaymentPreviewQuery({ startDate, endDate, transportCompanyId, clientCompanyId, plantId });
+
+  console.log('[payment-preview] selected filters', {
+    startDate,
+    endDate,
+    transportCompanyId,
+    clientCompanyId,
+    plantId,
+    ownerId: ownerId || null
+  });
+  console.log('[payment-preview] mongo query', filter);
 
   const rows = await LoadRow.find(filter);
+  console.log('[payment-preview] rows returned', rows.length);
 
   // Group load rows by owner
   const ownerGroups = {};
@@ -413,6 +431,44 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
     });
   }
 
+  console.log('[payment-preview] owners returned', Object.keys(ownerGroups).length);
+  console.log('[payment-preview] payment blocks generated', blocks.length);
+
+  if (rows.length === 0) {
+    return {
+      periodStart: new Date(startDate),
+      periodEnd: new Date(endDate),
+      totals: {
+        totalQty: 0,
+        totalAmount: 0,
+        totalCommission: 0,
+        totalGross: 0,
+        totalDiesel: 0,
+        totalCashAdvance: 0,
+        totalRfidGps: 0,
+        totalTds: 0,
+        totalGst: 0,
+        totalNetPayable: 0
+      },
+      blocks: [],
+      settings,
+      previewMeta: {
+        selectedFilters: {
+          startDate,
+          endDate,
+          transportCompanyId,
+          clientCompanyId,
+          plantId,
+          ownerId: ownerId || null
+        },
+        matchedRows: 0,
+        matchedOwners: 0,
+        paymentBlocks: 0,
+        message: 'No imported records found for the selected Transport Company, Client Company, Plant and Date Range.'
+      }
+    };
+  }
+
   // overall run totals
   const overallTotals = blocks.reduce(
     (acc, b) => {
@@ -447,7 +503,20 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
     periodEnd: new Date(endDate),
     totals: overallTotals,
     blocks,
-    settings
+    settings,
+    previewMeta: {
+      selectedFilters: {
+        startDate,
+        endDate,
+        transportCompanyId,
+        clientCompanyId,
+        plantId,
+        ownerId: ownerId || null
+      },
+      matchedRows: rows.length,
+      matchedOwners: Object.keys(ownerGroups).length,
+      paymentBlocks: blocks.length
+    }
   };
 }
 
