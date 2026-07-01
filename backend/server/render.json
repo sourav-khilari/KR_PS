@@ -1,0 +1,9 @@
+{
+  "name": "truck-payments-server",
+  "version": 1,
+  "buildCommand": "npm install",
+  "startCommand": "npm start",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
