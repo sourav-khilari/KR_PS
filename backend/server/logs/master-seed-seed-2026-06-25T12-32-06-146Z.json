@@ -1,0 +1,314 @@
+{
+  "seedRunId": "seed-2026-06-25T12-32-06-146Z",
+  "status": "completed",
+  "sourceFiles": [
+    {
+      "fileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "filePath": "C:\\Users\\hp\\Desktop\\own_pr\\Kr\\web-kr\\analysis_input\\PURULIA TRUCK LOAD DETAILS (2026-27).xlsx"
+    },
+    {
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "filePath": "C:\\Users\\hp\\Desktop\\own_pr\\Kr\\web-kr\\analysis_input\\SHREE PURULIA PAYMENT (2026-27).xlsx"
+    }
+  ],
+  "sheetSummaries": [
+    {
+      "sheetName": "MAY2026",
+      "fileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "parserType": "load-details",
+      "status": "parsed",
+      "headerRowNumber": 2,
+      "parsedRows": 219,
+      "detectedColumns": [
+        "truckNumber",
+        "ownerName",
+        "ownerPan"
+      ]
+    },
+    {
+      "sheetName": "01.06.26 to 15.06.26 (BALAJ",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 29,
+      "currentOwnerName": "Balaji Transportation & Logistics",
+      "currentOwnerPan": "ABEFB6995Q"
+    },
+    {
+      "sheetName": "01.06.26 to 15.06.26",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 24,
+      "currentOwnerName": "Saroj Khan",
+      "currentOwnerPan": "BFOPK9833H"
+    },
+    {
+      "sheetName": "01.05.26 to 31.05.26",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 21,
+      "currentOwnerName": "Sanoj Kumar",
+      "currentOwnerPan": "CVHPK2934H"
+    },
+    {
+      "sheetName": "01.05.26 to 31.05.26 (BALAJI)",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 47,
+      "currentOwnerName": "Balaji Transportation & Logistics",
+      "currentOwnerPan": "ABEFB6995Q"
+    },
+    {
+      "sheetName": "01.04.26 to 30.04.26 (BALAJI)",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 25,
+      "currentOwnerName": "Balaji Transportation & Logistics",
+      "currentOwnerPan": "ABEFB6995Q"
+    },
+    {
+      "sheetName": "01.04.26 to 30.04.26",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 17,
+      "currentOwnerName": "Sanoj Kumar",
+      "currentOwnerPan": "CVHPK2934H"
+    }
+  ],
+  "totals": {
+    "rowsSeen": 382,
+    "uniqueOwners": 15,
+    "uniqueTrucks": 27,
+    "createdOwners": 15,
+    "updatedOwners": 0,
+    "createdTrucks": 27,
+    "updatedTrucks": 0,
+    "skippedRows": 0,
+    "conflicts": 0
+  },
+  "createdOwners": [
+    {
+      "id": "6a3d1fc6482c9dc0e0213700",
+      "ownerName": "P K SINGH",
+      "panNumber": ""
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213703",
+      "ownerName": "ASHOK KUMAR SINHA",
+      "panNumber": ""
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213706",
+      "ownerName": "BALAJI TRANSPORTATION & LOGISTICS",
+      "panNumber": ""
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213709",
+      "ownerName": "SANOJ KUMAR",
+      "panNumber": ""
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021370c",
+      "ownerName": "SWASTIK",
+      "panNumber": ""
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021370f",
+      "ownerName": "VIJAY KUMAR MANDAL",
+      "panNumber": ""
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213712",
+      "ownerName": "Balaji Transportation & Logistics",
+      "panNumber": "ABEFB6995Q"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213715",
+      "ownerName": "Ramesh Kumar Jindal",
+      "panNumber": "ABVPJ9841L"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213718",
+      "ownerName": "Ashok Kumar Sinha HUF",
+      "panNumber": "AAWHA4006Q"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021371b",
+      "ownerName": "Ajay Kumar Pandey",
+      "panNumber": "ASBPP6926B"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021371e",
+      "ownerName": "Mukesh Kumar Pandey",
+      "panNumber": "AXHPP9815C"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213721",
+      "ownerName": "Saroj Khan",
+      "panNumber": "BFOPK9833H"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213724",
+      "ownerName": "Vijay Kumar Mandal",
+      "panNumber": "ASWPM2883P"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213727",
+      "ownerName": "Sanoj Kumar",
+      "panNumber": "CVHPK2934H"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021372a",
+      "ownerName": "Urmila Kumari",
+      "panNumber": "BRHPK5593B"
+    }
+  ],
+  "updatedOwners": [],
+  "createdTrucks": [
+    {
+      "id": "6a3d1fc6482c9dc0e021372d",
+      "truckNumber": "JH10DB3312",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213730",
+      "truckNumber": "JH10DB5735",
+      "ownerId": "6a3d1fc6482c9dc0e0213703"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213733",
+      "truckNumber": "JH10DE0824",
+      "ownerId": "6a3d1fc6482c9dc0e0213712"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213736",
+      "truckNumber": "JH10DC8969",
+      "ownerId": "6a3d1fc6482c9dc0e0213712"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213739",
+      "truckNumber": "WB37H7078",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021373c",
+      "truckNumber": "JH10DB2523",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021373f",
+      "truckNumber": "BR10GB3280",
+      "ownerId": "6a3d1fc6482c9dc0e0213727"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213742",
+      "truckNumber": "WB37H7098",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213745",
+      "truckNumber": "JH10DB4323",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213748",
+      "truckNumber": "JH10DB4612",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021374b",
+      "truckNumber": "WB37H7061",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021374e",
+      "truckNumber": "JH10DB6677",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213751",
+      "truckNumber": "JH10DB5553",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213754",
+      "truckNumber": "JH10DE0772",
+      "ownerId": "6a3d1fc6482c9dc0e0213712"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213757",
+      "truckNumber": "WB37H7100",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021375a",
+      "truckNumber": "JH10CQ3188",
+      "ownerId": "6a3d1fc6482c9dc0e021370c"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021375d",
+      "truckNumber": "JH10CQ3088",
+      "ownerId": "6a3d1fc6482c9dc0e021370c"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213760",
+      "truckNumber": "JH10DD6174",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213763",
+      "truckNumber": "JH10DB7973",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213766",
+      "truckNumber": "JH10DC9796",
+      "ownerId": "6a3d1fc6482c9dc0e0213712"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213769",
+      "truckNumber": "JH10DE2279",
+      "ownerId": "6a3d1fc6482c9dc0e0213712"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021376c",
+      "truckNumber": "JH10CZ4608",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021376f",
+      "truckNumber": "JH10DC3051",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213772",
+      "truckNumber": "JH10DD4752",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213775",
+      "truckNumber": "JH10DB5275",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e0213778",
+      "truckNumber": "JH10DB5486",
+      "ownerId": "6a3d1fc6482c9dc0e0213700"
+    },
+    {
+      "id": "6a3d1fc6482c9dc0e021377b",
+      "truckNumber": "NL01N4565",
+      "ownerId": "6a3d1fc6482c9dc0e0213724"
+    }
+  ],
+  "updatedTrucks": [],
+  "skippedRows": [],
+  "conflicts": [],
+  "generatedAt": "2026-06-25T12:32:06.425Z",
+  "displayName": "master-seed-seed-2026-06-25T12-32-06-146Z.json"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "truck-load-payment-sheet",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MERN stack truck-load payment sheet system",
+  "workspaces": [
+    "backend/server",
+    "frontend/client",
+    "shared/utils"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w backend/server\" \"npm run dev -w frontend/client\"",
+    "test": "npm test -w backend/server",
+    "build": "npm run build -w frontend/client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

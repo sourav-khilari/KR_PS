@@ -1,0 +1,1751 @@
+{
+  "seedRunId": "seed-2026-06-25T09-55-46-747Z",
+  "status": "completed",
+  "sourceFiles": [
+    {
+      "fileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "filePath": "C:\\Users\\hp\\Desktop\\own_pr\\Kr\\web-kr\\analysis_input\\PURULIA TRUCK LOAD DETAILS (2026-27).xlsx"
+    },
+    {
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "filePath": "C:\\Users\\hp\\Desktop\\own_pr\\Kr\\web-kr\\analysis_input\\SHREE PURULIA PAYMENT (2026-27).xlsx"
+    }
+  ],
+  "sheetSummaries": [
+    {
+      "sheetName": "MAY2026",
+      "fileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "parserType": "load-details",
+      "status": "parsed",
+      "headerRowNumber": 2,
+      "parsedRows": 219,
+      "detectedColumns": [
+        "truckNumber",
+        "ownerName",
+        "ownerPan"
+      ]
+    },
+    {
+      "sheetName": "01.06.26 to 15.06.26 (BALAJ",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 29,
+      "currentOwnerName": "Balaji Transportation & Logistics",
+      "currentOwnerPan": "ABEFB6995Q"
+    },
+    {
+      "sheetName": "01.06.26 to 15.06.26",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 24,
+      "currentOwnerName": "Saroj Khan",
+      "currentOwnerPan": "BFOPK9833H"
+    },
+    {
+      "sheetName": "01.05.26 to 31.05.26",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 21,
+      "currentOwnerName": "Sanoj Kumar",
+      "currentOwnerPan": "CVHPK2934H"
+    },
+    {
+      "sheetName": "01.05.26 to 31.05.26 (BALAJI)",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 47,
+      "currentOwnerName": "Balaji Transportation & Logistics",
+      "currentOwnerPan": "ABEFB6995Q"
+    },
+    {
+      "sheetName": "01.04.26 to 30.04.26 (BALAJI)",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 25,
+      "currentOwnerName": "Balaji Transportation & Logistics",
+      "currentOwnerPan": "ABEFB6995Q"
+    },
+    {
+      "sheetName": "01.04.26 to 30.04.26",
+      "fileName": "SHREE PURULIA PAYMENT (2026-27).xlsx",
+      "parserType": "payment-sheet",
+      "status": "parsed",
+      "parsedRows": 17,
+      "currentOwnerName": "Sanoj Kumar",
+      "currentOwnerPan": "CVHPK2934H"
+    }
+  ],
+  "totals": {
+    "rowsSeen": 382,
+    "uniqueOwners": 15,
+    "uniqueTrucks": 7,
+    "createdOwners": 9,
+    "updatedOwners": 0,
+    "createdTrucks": 7,
+    "updatedTrucks": 0,
+    "skippedRows": 174,
+    "conflicts": 0
+  },
+  "createdOwners": [
+    {
+      "id": "6a3cfb22725cf8464fad6817",
+      "ownerName": "Balaji Transportation & Logistics",
+      "panNumber": "ABEFB6995Q"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad681a",
+      "ownerName": "Ramesh Kumar Jindal",
+      "panNumber": "ABVPJ9841L"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad681d",
+      "ownerName": "Ashok Kumar Sinha HUF",
+      "panNumber": "AAWHA4006Q"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad6820",
+      "ownerName": "Ajay Kumar Pandey",
+      "panNumber": "ASBPP6926B"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad6823",
+      "ownerName": "Mukesh Kumar Pandey",
+      "panNumber": "AXHPP9815C"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad6826",
+      "ownerName": "Saroj Khan",
+      "panNumber": "BFOPK9833H"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad6829",
+      "ownerName": "Vijay Kumar Mandal",
+      "panNumber": "ASWPM2883P"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad682c",
+      "ownerName": "Sanoj Kumar",
+      "panNumber": "CVHPK2934H"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad682f",
+      "ownerName": "Urmila Kumari",
+      "panNumber": "BRHPK5593B"
+    }
+  ],
+  "updatedOwners": [],
+  "createdTrucks": [
+    {
+      "id": "6a3cfb22725cf8464fad6832",
+      "truckNumber": "JH10DE0824",
+      "ownerId": "6a3cfb22725cf8464fad6817"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad6835",
+      "truckNumber": "JH10DC8969",
+      "ownerId": "6a3cfb22725cf8464fad6817"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad6838",
+      "truckNumber": "BR10GB3280",
+      "ownerId": "6a3cfb22725cf8464fad682c"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad683b",
+      "truckNumber": "JH10DE0772",
+      "ownerId": "6a3cfb22725cf8464fad6817"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad683e",
+      "truckNumber": "JH10DC9796",
+      "ownerId": "6a3cfb22725cf8464fad6817"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad6841",
+      "truckNumber": "JH10DE2279",
+      "ownerId": "6a3cfb22725cf8464fad6817"
+    },
+    {
+      "id": "6a3cfb22725cf8464fad6844",
+      "truckNumber": "NL01N4565",
+      "ownerId": "6a3cfb22725cf8464fad6829"
+    }
+  ],
+  "updatedTrucks": [],
+  "skippedRows": [
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 3,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 4,
+      "truckNumber": "JH10DB5735",
+      "ownerName": "ASHOK KUMAR SINHA",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 5,
+      "truckNumber": "JH10DE0824",
+      "ownerName": "BALAJI TRANSPORTATION & LOGISTICS",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 9,
+      "truckNumber": "BR10GB3280",
+      "ownerName": "SANOJ KUMAR",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 23,
+      "truckNumber": "JH10CQ3188",
+      "ownerName": "SWASTIK",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 64,
+      "truckNumber": "NL01N4565",
+      "ownerName": "VIJAY KUMAR MANDAL",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 3,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 4,
+      "truckNumber": "JH10DB5735",
+      "ownerName": "ASHOK KUMAR SINHA",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 7,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 8,
+      "truckNumber": "JH10DB2523",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 10,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 11,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 12,
+      "truckNumber": "JH10DB4323",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 13,
+      "truckNumber": "JH10DB4323",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 14,
+      "truckNumber": "JH10DB4612",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 15,
+      "truckNumber": "JH10DB4612",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 16,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 17,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 18,
+      "truckNumber": "JH10DB6677",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 19,
+      "truckNumber": "JH10DB5553",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 22,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 23,
+      "truckNumber": "JH10CQ3188",
+      "ownerName": "SWASTIK",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 24,
+      "truckNumber": "JH10CQ3088",
+      "ownerName": "SWASTIK",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 25,
+      "truckNumber": "JH10DD6174",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 26,
+      "truckNumber": "JH10DB7973",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 28,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 29,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 31,
+      "truckNumber": "JH10CZ4608",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 32,
+      "truckNumber": "JH10DC3051",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 33,
+      "truckNumber": "JH10DD4752",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 34,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 35,
+      "truckNumber": "JH10DB5275",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 36,
+      "truckNumber": "JH10DB2523",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 37,
+      "truckNumber": "JH10DB2523",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 39,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 40,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 41,
+      "truckNumber": "JH10DB5735",
+      "ownerName": "ASHOK KUMAR SINHA",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 42,
+      "truckNumber": "JH10DB5735",
+      "ownerName": "ASHOK KUMAR SINHA",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 43,
+      "truckNumber": "JH10DB5486",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 44,
+      "truckNumber": "JH10DB5486",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 45,
+      "truckNumber": "JH10DB4323",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 46,
+      "truckNumber": "JH10DB4323",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 49,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 50,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 51,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 52,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 53,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 55,
+      "truckNumber": "JH10DD4752",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 56,
+      "truckNumber": "JH10DD4752",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 57,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 58,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 59,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 61,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 62,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 63,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 66,
+      "truckNumber": "JH10DB5553",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 67,
+      "truckNumber": "JH10DB4612",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 68,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 69,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 72,
+      "truckNumber": "JH10DB4323",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 73,
+      "truckNumber": "JH10DB6677",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 74,
+      "truckNumber": "JH10DD6174",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 75,
+      "truckNumber": "JH10CQ3188",
+      "ownerName": "SWASTIK",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 76,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 77,
+      "truckNumber": "JH10DB5735",
+      "ownerName": "ASHOK KUMAR SINHA",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 78,
+      "truckNumber": "JH10DB5275",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 79,
+      "truckNumber": "JH10DB5486",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 82,
+      "truckNumber": "JH10DB2523",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 83,
+      "truckNumber": "JH10CZ4608",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 84,
+      "truckNumber": "JH10DB4612",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 85,
+      "truckNumber": "JH10DB4612",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 86,
+      "truckNumber": "JH10DD4752",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 87,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 88,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 89,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 90,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 93,
+      "truckNumber": "JH10CQ3088",
+      "ownerName": "SWASTIK",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 94,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 95,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 96,
+      "truckNumber": "JH10DB5553",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 97,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 98,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 99,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 100,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 104,
+      "truckNumber": "JH10DD4752",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 106,
+      "truckNumber": "JH10DB5275",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 110,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 111,
+      "truckNumber": "JH10DB4612",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 112,
+      "truckNumber": "JH10DB7973",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 113,
+      "truckNumber": "JH10DB7973",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 114,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 115,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 116,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 117,
+      "truckNumber": "JH10DB5486",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 118,
+      "truckNumber": "JH10DB5486",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 119,
+      "truckNumber": "JH10DB4323",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 120,
+      "truckNumber": "JH10DB4323",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 121,
+      "truckNumber": "JH10DB6677",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 125,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 126,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 127,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 128,
+      "truckNumber": "JH10DB2523",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 129,
+      "truckNumber": "JH10CZ4608",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 130,
+      "truckNumber": "JH10DB5735",
+      "ownerName": "ASHOK KUMAR SINHA",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 131,
+      "truckNumber": "JH10CQ3088",
+      "ownerName": "SWASTIK",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 132,
+      "truckNumber": "JH10DC3051",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 133,
+      "truckNumber": "JH10DB5275",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 135,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 136,
+      "truckNumber": "JH10DD6174",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 137,
+      "truckNumber": "JH10DD6174",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 138,
+      "truckNumber": "JH10DD6174",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 140,
+      "truckNumber": "JH10DB5486",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 141,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 142,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 143,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 145,
+      "truckNumber": "JH10CZ4608",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 146,
+      "truckNumber": "JH10DB7973",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 147,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 148,
+      "truckNumber": "JH10DB4612",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 149,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 153,
+      "truckNumber": "JH10DB2523",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 156,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 158,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 159,
+      "truckNumber": "JH10DD6174",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 160,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 162,
+      "truckNumber": "JH10CZ4608",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 163,
+      "truckNumber": "JH10DB5486",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 164,
+      "truckNumber": "JH10CQ3188",
+      "ownerName": "SWASTIK",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 165,
+      "truckNumber": "JH10DB6677",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 166,
+      "truckNumber": "JH10DB7973",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 167,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 168,
+      "truckNumber": "JH10DB5275",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 169,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 170,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 171,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 175,
+      "truckNumber": "JH10CQ3088",
+      "ownerName": "SWASTIK",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 176,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 177,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 178,
+      "truckNumber": "JH10DB4612",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 179,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 180,
+      "truckNumber": "JH10DB5735",
+      "ownerName": "ASHOK KUMAR SINHA",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 181,
+      "truckNumber": "JH10DB5735",
+      "ownerName": "ASHOK KUMAR SINHA",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 182,
+      "truckNumber": "JH10DB5735",
+      "ownerName": "ASHOK KUMAR SINHA",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 183,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 184,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 186,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 187,
+      "truckNumber": "WB37H7100",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 188,
+      "truckNumber": "JH10DB5275",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 189,
+      "truckNumber": "WB37H7078",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 190,
+      "truckNumber": "JH10DB5486",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 191,
+      "truckNumber": "JH10DB5486",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 193,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 194,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 195,
+      "truckNumber": "JH10DB7973",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 196,
+      "truckNumber": "JH10DD6174",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 197,
+      "truckNumber": "JH10DD6174",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 198,
+      "truckNumber": "JH10DB6677",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 199,
+      "truckNumber": "JH10CZ4608",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 200,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 203,
+      "truckNumber": "JH10DB4323",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 204,
+      "truckNumber": "JH10DD4752",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 205,
+      "truckNumber": "JH10DB3312",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 209,
+      "truckNumber": "JH10CQ3088",
+      "ownerName": "SWASTIK",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 210,
+      "truckNumber": "JH10CQ3088",
+      "ownerName": "SWASTIK",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 212,
+      "truckNumber": "JH10DB7973",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 213,
+      "truckNumber": "JH10DB7973",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 214,
+      "truckNumber": "JH10DB7973",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 215,
+      "truckNumber": "JH10DB4612",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 216,
+      "truckNumber": "WB37H7061",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 217,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 218,
+      "truckNumber": "WB37H7098",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 219,
+      "truckNumber": "JH10DB2523",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 220,
+      "truckNumber": "JH10CZ4608",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    },
+    {
+      "sourceFileName": "PURULIA TRUCK LOAD DETAILS (2026-27).xlsx",
+      "sourceSheetName": "MAY2026",
+      "sourceRowNumber": 221,
+      "truckNumber": "JH10DD6174",
+      "ownerName": "P K SINGH",
+      "ownerPan": "",
+      "reason": "Owner PAN could not be resolved from trusted sources"
+    }
+  ],
+  "conflicts": [],
+  "generatedAt": "2026-06-25T09:55:46.967Z",
+  "displayName": "master-seed-seed-2026-06-25T09-55-46-747Z.json"
+}

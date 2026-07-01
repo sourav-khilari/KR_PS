@@ -1,0 +1,21 @@
+﻿# Assumptions
+
+- The two supplied Excel files are trusted reference files for initial `TruckMaster` and `OwnerMaster` seeding.
+- After the initial seed, the database becomes the operating source of truth for truck-owner mappings.
+- `PURULIA TRUCK LOAD DETAILS (2026-27).xlsx` is a trusted source for truck-load rows and truck-owner mappings.
+- `SHREE PURULIA PAYMENT (2026-27).xlsx` is the trusted reference for payment layout, owner grouping, PAN display, GST, TDS, and formulas.
+- The `PODUCT NAME` typo in the master workbook is intentional source data and should be accepted as an alias for `PRODUCT NAME`.
+- Future uploaded master files may include additional month sheets; parser should scan all sheets.
+- V1 uses one current owner reference per truck and does not track `effectiveFrom` or `effectiveTo`.
+- Users can manage owner and truck master records through the application.
+- Uploaded files can suggest master-data changes, but changes require explicit user action.
+- Supported mismatch actions are `Update Master`, `Keep Existing`, `Skip`, and `Cancel Import`.
+- Payment sheet generation should group by `OwnerMaster`, not raw uploaded owner text.
+- Owner PAN is required before generating payment sheets, even if uploaded rows are allowed to preview with missing PAN warnings.
+- GST is 18% by default, split as CGST 9% and SGST 9%.
+- TDS is owner-specific. Observed regular owner blocks use 1%, while Balaji blocks use 2%.
+- Commission logic is owner/category-specific. Some rows use fixed `900`; others use `ROUND(Amount * 3.5%, 0)`.
+- Diesel rate is period/date-specific. The master workbook shows formulas using rates such as `92.5` and `95.62`.
+- Some payment summary rows referenced in formulas are blank or unclear in the workbook. Their labels and business meaning should be confirmed before generation.
+- No hidden rows or hidden columns were found in the provided files.
+- The application should not generate payment sheets until seeding, import validation, owner/truck CRUD, settings, and correction workflows are stable.
