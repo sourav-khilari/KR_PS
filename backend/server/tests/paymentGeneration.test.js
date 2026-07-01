@@ -175,6 +175,34 @@ describe('Payment generation workflow & business calculations', () => {
     expect(block.summaryValues.netPayable).toBe(46447);
   });
 
+  it('queries payment preview rows by transport, client, plant, and date range on the server', async () => {
+    const owner = makeOwner({ commissionValue: 900 });
+
+    mocks.ownerMasterFind.mockResolvedValue([owner]);
+    mocks.truckMasterFindOne.mockImplementation(() => ({
+      populate: vi.fn().mockResolvedValue({ ownerId: owner })
+    }));
+    mocks.loadRowFind.mockResolvedValue([makeLoadRow('WB60A1234', new Date('2026-05-10T00:00:00.000Z'))]);
+
+    await getPaymentPreview({
+      startDate: '2026-05-01',
+      endDate: '2026-05-31',
+      transportCompanyId: 'transport-1',
+      clientCompanyId: 'client-1',
+      plantId: 'plant-1'
+    });
+
+    expect(mocks.loadRowFind).toHaveBeenCalledOnce();
+    expect(mocks.loadRowFind.mock.calls[0][0]).toMatchObject({
+      transportCompanyId: 'transport-1',
+      clientCompanyId: 'client-1',
+      plantId: 'plant-1',
+      approvalStatus: 'approved'
+    });
+    expect(mocks.loadRowFind.mock.calls[0][0]['normalizedRow.invDate'].$gte).toBeInstanceOf(Date);
+    expect(mocks.loadRowFind.mock.calls[0][0]['normalizedRow.invDate'].$lte).toBeInstanceOf(Date);
+  });
+
   it('omits GST rows and computes payable without GST when owner is not GST applicable', async () => {
     const owner = makeOwner({ gstApplicable: false, commissionValue: 900 });
 

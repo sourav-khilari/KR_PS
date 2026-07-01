@@ -3,6 +3,7 @@ import {
   cancelImportSession,
   deleteImportRow,
   getImportSessionDetails,
+  finalizeImportSession,
   listImportSessions,
   listImportedData,
   previewLoadImport,
@@ -48,15 +49,9 @@ export async function previewMasterImport(req, res, next) {
 
 export async function saveMasterImport(req, res, next) {
   try {
-    const { sessionId } = req.body;
-
-    if (!sessionId) {
-      const error = new Error('sessionId is required');
-      error.statusCode = 400;
-      throw error;
-    }
-
-    const session = await saveImportSession(sessionId, req.user);
+    const session = req.body?.sessionId
+      ? await saveImportSession(req.body.sessionId, req.user)
+      : await finalizeImportSession(req.body, req.user);
     res.status(200).json(session);
   } catch (error) {
     next(error);

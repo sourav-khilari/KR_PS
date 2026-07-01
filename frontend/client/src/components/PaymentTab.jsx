@@ -7,10 +7,21 @@ export function PaymentTab() {
   const [activeSubTab, setActiveSubTab] = useState('generate');
 
   return (
-    <section className="payment-tab-section">
-      <header className="payment-tab-header">
-        <h2>Payment Workflow</h2>
-        <div className="tab-buttons">
+    <section className="payment-tab-section panel-surface payment-workflow-shell">
+      <header className="page-hero payment-hero">
+        <div>
+          <p className="eyebrow">Payments</p>
+          <h2>Payment Workflow</h2>
+          <p className="muted-copy">Generate payouts, tune rules, and review history in one responsive workspace.</p>
+        </div>
+        <div className="hero-chip-stack">
+          <span className="summary-pill">Generate</span>
+          <span className="summary-pill">Settings</span>
+          <span className="summary-pill">History</span>
+        </div>
+      </header>
+
+      <div className="tab-buttons workflow-tabs">
           <button
             type="button"
             className={activeSubTab === 'generate' ? 'active' : ''}
@@ -32,10 +43,9 @@ export function PaymentTab() {
           >
             Payout History
           </button>
-        </div>
-      </header>
+      </div>
 
-      <div className="payment-tab-content">
+      <div className="payment-tab-content payment-tab-card">
         {activeSubTab === 'generate' && <PaymentGenerate />}
         {activeSubTab === 'settings' && <PaymentSettings />}
         {activeSubTab === 'history' && <PaymentHistory />}

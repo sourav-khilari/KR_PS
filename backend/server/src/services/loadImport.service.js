@@ -148,6 +148,28 @@ async function attachDuplicateInvoiceValidation(rows) {
   return rows;
 }
 
+function hasErrorMessages(messages = []) {
+  return messages.some((message) => message.severity === 'error');
+}
+
+function clonePreviewRows(rows = []) {
+  return rows.map((row) => ({
+    ...row,
+    validationMessages: [...(row.validationMessages || [])]
+  }));
+}
+
+function countWarnings(rows = []) {
+  return rows.reduce(
+    (count, row) => count + (row.validationMessages || []).filter((item) => item.severity === 'warning').length,
+    0
+  );
+}
+
+function getSavedRowCount(rows = []) {
+  return rows.filter((row) => !row.skipInsert && !hasErrorMessages(row.validationMessages || [])).length;
+}
+
 function requiredFieldWarning(rowNumber, field, message) {
   return { rowNumber, field, severity: 'warning', message };
 }
@@ -274,9 +296,8 @@ export async function previewLoadImport({
 }) {
   const parsed = parseLoadWorkbook(fileBuffer);
   const validated = await validateRows(parsed.rows);
-  const rowsToInsert = validated.rows.filter((row) => !row.skipInsert);
-  const validRows = rowsToInsert.filter((row) => row.validationMessages.every((item) => item.severity !== 'error'));
-  const session = await ImportSession.create({
+  const sheetNames = (parsed.sheets || parsed.sheetSummaries || []).map((sheet) => sheet.sheetName);
+  const previewSession = {
     fileName,
     uploadedBy,
     createdBy,
@@ -285,38 +306,112 @@ export async function previewLoadImport({
     clientCompanyId,
     plantId,
     rowCount: validated.rows.length,
-    validCount: validRows.length,
+    validCount: getSavedRowCount(validated.rows),
     warningCount: validated.summary.warningCount,
     errorCount: validated.summary.errorCount,
     status: 'previewed',
-    sheetNames: (parsed.sheets || parsed.sheetSummaries || []).map((sheet) => sheet.sheetName)
+    sheetNames
+  };
+
+  return {
+    session: previewSession,
+    rows: validated.rows,
+    parsed,
+    summary: validated.summary,
+    status: validated.status,
+    messages: validated.messages
+  };
+}
+
+export async function finalizeImportSession(payload, currentUser) {
+  const {
+    fileName,
+    transportCompanyId,
+    clientCompanyId,
+    plantId,
+    rows = [],
+    sheetNames = []
+  } = payload || {};
+
+  if (!fileName) {
+    const error = new Error('fileName is required');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!Array.isArray(rows) || rows.length === 0) {
+    const error = new Error('No validated rows available to save');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const rowsWithDuplicateChecks = await attachDuplicateInvoiceValidation(clonePreviewRows(rows));
+  const invalidRows = rowsWithDuplicateChecks.filter((row) => row.skipInsert || hasErrorMessages(row.validationMessages || []));
+
+  if (invalidRows.length > 0) {
+    const duplicateInvoices = invalidRows
+      .map((row) => normalizeInvoiceReference(row.normalizedRow?.invNo))
+      .filter(Boolean);
+    const error = new Error(
+      duplicateInvoices.length
+        ? `Duplicate invoice number(s) found: ${[...new Set(duplicateInvoices)].join(', ')}`
+        : 'Validated rows contain errors and cannot be saved'
+    );
+    error.statusCode = 400;
+    error.details = {
+      duplicateInvoices: [...new Set(duplicateInvoices)],
+      rows: invalidRows
+    };
+    throw error;
+  }
+
+  const saveableRows = rowsWithDuplicateChecks.filter((row) => !row.skipInsert);
+  const warningCount = countWarnings(saveableRows);
+  const session = await ImportSession.create({
+    fileName,
+    uploadedBy: currentUser?.id || currentUser?._id,
+    createdBy: currentUser?.id || currentUser?._id,
+    updatedBy: currentUser?.id || currentUser?._id,
+    transportCompanyId,
+    clientCompanyId,
+    plantId,
+    rowCount: saveableRows.length,
+    validCount: saveableRows.length,
+    warningCount,
+    errorCount: 0,
+    status: 'saved',
+    sheetNames
   });
 
   const createdRows = await LoadRow.insertMany(
-    rowsToInsert.map((row) => ({
+    saveableRows.map((row) => ({
       importSessionId: session._id,
       transportCompanyId: session.transportCompanyId,
       clientCompanyId: session.clientCompanyId,
       plantId: session.plantId,
-      sourceSheetName: row.sheetName,
-      sourceRowNumber: row.rowNumber,
+      sourceSheetName: row.sourceSheetName || row.sheetName || '',
+      sourceRowNumber: row.sourceRowNumber ?? row.rowNumber,
       rawRow: row.rawRow,
       normalizedRow: row.normalizedRow,
       validationMessages: row.validationMessages,
       editStatus: row.editStatus,
       approvalStatus: row.approvalStatus,
-      createdBy,
-      updatedBy
+      createdBy: currentUser?.id || currentUser?._id,
+      updatedBy: currentUser?.id || currentUser?._id
     }))
   );
 
   return {
     session,
     rows: createdRows,
-    parsed,
-    summary: validated.summary,
-    status: validated.status,
-    messages: validated.messages
+    summary: {
+      rowCount: saveableRows.length,
+      validCount: saveableRows.length,
+      warningCount,
+      errorCount: 0
+    },
+    status: 'saved',
+    messages: saveableRows.flatMap((row) => row.validationMessages || [])
   };
 }
 

@@ -8,17 +8,12 @@ import { ProtectedRoute } from './modules/auth/ProtectedRoute.jsx';
 import { useAuth } from './modules/auth/AuthContext.jsx';
 import { MasterManagementShell } from './modules/masterData/MasterManagementShell.jsx';
 import {
-  approveImportRow,
-  cancelImportSession,
-  getImportSession,
   listClientCompanies,
   listImportSessions,
   listPlants,
   listTransportCompanies,
   previewMasterImport,
-  rejectImportRow,
   saveMasterImport,
-  updateImportRow
 } from './services/api.js';
 
 function Workspace() {
@@ -38,6 +33,43 @@ function Workspace() {
   const rows = preview?.rows || [];
   const messages = useMemo(() => rows.flatMap((row) => row.validationMessages || []), [rows]);
   const hasPreview = rows.length > 0;
+
+  function getSelectedTransportCompany(id) {
+    return transportCompanies.find((item) => item._id === id) || null;
+  }
+
+  function getSelectedClientCompany(id) {
+    return clientCompanies.find((item) => item._id === id) || null;
+  }
+
+  function getSelectedPlant(id) {
+    return plants.find((item) => item._id === id) || null;
+  }
+
+  function buildPreviewMetadata(transportCompanyId, clientCompanyId, plantId) {
+    return {
+      transportCompanyId,
+      clientCompanyId,
+      plantId,
+      transportCompany: getSelectedTransportCompany(transportCompanyId),
+      clientCompany: getSelectedClientCompany(clientCompanyId),
+      plant: getSelectedPlant(plantId)
+    };
+  }
+
+  function getPreviewRowKey(row) {
+    return row?._id || `${row?.sourceSheetName || row?.sheetName || 'sheet'}-${row?.sourceRowNumber || row?.rowNumber || ''}`;
+  }
+
+  function updatePreviewRows(updater) {
+    setPreview((current) => {
+      if (!current) return current;
+      return {
+        ...current,
+        rows: updater(current.rows || [])
+      };
+    });
+  }
 
   const stats = useMemo(() => {
     const errors = messages.filter((item) => item.severity === 'error').length;
@@ -60,31 +92,15 @@ function Workspace() {
         plantId,
         token
       });
-      setPreview(result);
-      await fetchImportSessions();
+      setPreview({
+        ...result,
+        metadata: buildPreviewMetadata(transportCompanyId, clientCompanyId, plantId)
+      });
     } catch (apiError) {
       setError(apiError.message);
     } finally {
       setIsLoading(false);
     }
-  }
-
-  async function refreshSession(sessionId) {
-    const details = await getImportSession(sessionId, token);
-    setPreview((current) =>
-      current
-        ? {
-            ...current,
-            session: details.session,
-            rows: details.rows
-          }
-        : { session: details.session, rows: details.rows }
-    );
-
-    setSelectedRow((current) => {
-      if (!current) return current;
-      return details.rows.find((row) => row._id === current._id) || null;
-    });
   }
 
   async function handleEditRow(row) {
@@ -92,59 +108,67 @@ function Workspace() {
   }
 
   async function handleSaveRow(row, draft) {
-    if (!preview?.session?._id) return;
-    setIsLoading(true);
-    setError('');
+    if (!preview) return;
 
-    try {
-      await updateImportRow(preview.session._id, row._id, { normalizedRow: draft }, token);
-      await refreshSession(preview.session._id);
-    } catch (apiError) {
-      setError(apiError.message);
-    } finally {
-      setIsLoading(false);
-    }
+    updatePreviewRows((currentRows) => currentRows.map((currentRow) => (
+      getPreviewRowKey(currentRow) === getPreviewRowKey(row)
+        ? {
+            ...currentRow,
+            normalizedRow: {
+              ...currentRow.normalizedRow,
+              ...draft
+            },
+            editStatus: 'edited',
+            approvalStatus: 'pending'
+          }
+        : currentRow
+    )));
+    setSelectedRow(null);
   }
 
   async function handleApproveRow(row) {
-    if (!preview?.session?._id) return;
-    setIsLoading(true);
-    setError('');
+    if (!preview) return;
 
-    try {
-      await approveImportRow(preview.session._id, row._id, token);
-      await refreshSession(preview.session._id);
-    } catch (apiError) {
-      setError(apiError.message);
-    } finally {
-      setIsLoading(false);
-    }
+    updatePreviewRows((currentRows) => currentRows.map((currentRow) => (
+      getPreviewRowKey(currentRow) === getPreviewRowKey(row)
+        ? { ...currentRow, approvalStatus: 'approved' }
+        : currentRow
+    )));
+    setSelectedRow(null);
   }
 
   async function handleRejectRow(row) {
-    if (!preview?.session?._id) return;
-    setIsLoading(true);
-    setError('');
+    if (!preview) return;
 
-    try {
-      await rejectImportRow(preview.session._id, row._id, token);
-      await refreshSession(preview.session._id);
-    } catch (apiError) {
-      setError(apiError.message);
-    } finally {
-      setIsLoading(false);
-    }
+    updatePreviewRows((currentRows) => currentRows.map((currentRow) => (
+      getPreviewRowKey(currentRow) === getPreviewRowKey(row)
+        ? { ...currentRow, approvalStatus: 'rejected' }
+        : currentRow
+    )));
+    setSelectedRow(null);
   }
 
   async function handleSave() {
-    if (!preview?.session?._id) return;
+    if (!preview) return;
     setIsLoading(true);
     setError('');
 
     try {
-      const result = await saveMasterImport(preview.session._id, token);
+      const result = await saveMasterImport(
+        {
+          fileName: preview.session?.fileName || preview.fileName,
+          transportCompanyId: preview.metadata?.transportCompanyId || preview.session?.transportCompanyId || '',
+          clientCompanyId: preview.metadata?.clientCompanyId || preview.session?.clientCompanyId || '',
+          plantId: preview.metadata?.plantId || preview.session?.plantId || '',
+          sheetNames: preview.parsed?.sheets?.map((sheet) => sheet.sheetName) || preview.session?.sheetNames || [],
+          rows: preview.rows || []
+        },
+        token
+      );
       setSaveResult(result);
       await fetchImportSessions();
+      setPreview(null);
+      setSelectedRow(null);
     } catch (apiError) {
       setError(apiError.message);
     } finally {
@@ -153,20 +177,10 @@ function Workspace() {
   }
 
   async function handleCancelSession() {
-    if (!preview?.session?._id) return;
-    setIsLoading(true);
+    setPreview(null);
+    setSelectedRow(null);
     setError('');
-
-    try {
-      await cancelImportSession(preview.session._id, token);
-      setPreview(null);
-      setSelectedRow(null);
-      await fetchImportSessions();
-    } catch (apiError) {
-      setError(apiError.message);
-    } finally {
-      setIsLoading(false);
-    }
+    setSaveResult(null);
   }
 
   async function fetchTransportMasterOptions() {
@@ -339,9 +353,9 @@ function Workspace() {
                   </div>
                   <div className="summary-grid preview-meta">
                     <span className="summary-pill">{preview.session?.rowCount ?? preview.rowCount} parsed rows</span>
-                    <span className="summary-pill">Transport: {preview.session?.transportCompanyId?.companyName || 'N/A'}</span>
-                    <span className="summary-pill">Client: {preview.session?.clientCompanyId?.companyName || 'N/A'}</span>
-                    <span className="summary-pill">Plant: {preview.session?.plantId?.plantName || 'N/A'}</span>
+                    <span className="summary-pill">Transport: {preview.metadata?.transportCompany?.companyName || ''}</span>
+                    <span className="summary-pill">Client: {preview.metadata?.clientCompany?.companyName || ''}</span>
+                    <span className="summary-pill">Plant: {preview.metadata?.plant?.plantName || ''}</span>
                   </div>
                 </section>
                 <ImportPreviewTable rows={rows} onEditRow={handleEditRow} />

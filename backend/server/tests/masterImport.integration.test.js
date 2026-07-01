@@ -70,9 +70,10 @@ describe('master import API', () => {
       .expect(401);
   });
 
-  it('previews and stores the import session', async () => {
+  it('previews rows without storing them', async () => {
     const app = createApp();
     const token = authToken();
+    const loadRowModel = await import('../src/models/MasterImport.js');
 
     const preview = await request(app)
       .post('/api/master-imports/preview')
@@ -87,9 +88,41 @@ describe('master import API', () => {
     expect(preview.body.rows).toHaveLength(1);
     expect(preview.body.rows[0].normalizedRow.truckNo).toBe('JH10DB3312');
     expect(preview.body.rows[0].normalizedRow.qty).toBe(30);
-    expect(preview.body.rows[0].transportCompanyId).toBe('transport-1');
-    expect(preview.body.rows[0].clientCompanyId).toBe('client-1');
-    expect(preview.body.rows[0].plantId).toBe('plant-1');
+    expect(preview.body.session.transportCompanyId).toBe('transport-1');
+    expect(preview.body.session.clientCompanyId).toBe('client-1');
+    expect(preview.body.session.plantId).toBe('plant-1');
+    expect(loadRowModel.ImportSession.create).not.toHaveBeenCalled();
+  });
+
+  it('finalizes a preview into persisted import rows', async () => {
+    const app = createApp();
+    const token = authToken();
+
+    const preview = await request(app)
+      .post('/api/master-imports/preview')
+      .set('Authorization', `Bearer ${token}`)
+      .field('transportCompanyId', 'transport-1')
+      .field('clientCompanyId', 'client-1')
+      .field('plantId', 'plant-1')
+      .attach('file', sampleExcel(), 'sample.xlsx')
+      .expect(201);
+
+    const save = await request(app)
+      .post('/api/master-imports/save')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        fileName: preview.body.session.fileName,
+        transportCompanyId: 'transport-1',
+        clientCompanyId: 'client-1',
+        plantId: 'plant-1',
+        sheetNames: preview.body.session.sheetNames,
+        rows: preview.body.rows
+      })
+      .expect(200);
+
+    expect(save.body.session).toBeDefined();
+    expect(save.body.rows).toHaveLength(1);
+    expect(save.body.session.status).toBe('saved');
   });
 
   it('lists imported data rows with filtering and pagination', async () => {
@@ -127,7 +160,7 @@ describe('master import API', () => {
       .attach('file', sampleExcel(), 'sample.xlsx')
       .expect(201);
 
-    expect(preview.body.rows).toHaveLength(0);
+    expect(preview.body.rows).toHaveLength(1);
     expect(preview.body.summary.errorCount).toBeGreaterThan(0);
     expect(preview.body.messages.some((message) => message.message.includes('already exists'))).toBe(true);
   });

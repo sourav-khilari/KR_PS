@@ -3,6 +3,14 @@
   background: #f5f7fb;
   font-family: Inter, Arial, Helvetica, sans-serif;
   line-height: 1.5;
+  --surface: rgba(255, 255, 255, 0.96);
+  --surface-strong: #ffffff;
+  --line: #dde4ef;
+  --line-strong: #cbd5e1;
+  --ink: #172033;
+  --muted: #59657a;
+  --accent: #4f46e5;
+  --accent-strong: #2457c5;
 }
 
 * {
@@ -81,11 +89,352 @@ button:disabled {
 }
 
 .panel-surface {
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid #dde4ef;
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: 16px;
   padding: 18px;
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+}
+
+.page-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 8px;
+}
+
+.page-hero h2,
+.page-hero h3 {
+  margin: 0;
+  font-size: clamp(24px, 2.5vw, 34px);
+}
+
+.page-hero p {
+  margin: 6px 0 0;
+  max-width: 72ch;
+}
+
+.hero-chip-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.upload-page-shell,
+.payment-workflow-shell,
+.dashboard-page-shell,
+.imported-data-shell {
+  display: grid;
+  gap: 18px;
+}
+
+.workflow-step-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.workflow-step-card,
+.upload-info-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.workflow-step-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-weight: 700;
+}
+
+.upload-layout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.75fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.upload-form-card,
+.upload-side-rail,
+.drawer-card-section,
+.payment-tab-card,
+.payment-history-filters {
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.upload-form-grid,
+.drawer-edit-grid,
+.drawer-info-grid,
+.raw-values-grid,
+.history-filter-grid,
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.upload-form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.upload-file-field {
+  grid-column: 1 / -1;
+}
+
+.upload-preview-btn {
+  margin-top: 4px;
+  justify-self: start;
+}
+
+.summary-matrix {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.summary-matrix div,
+.raw-value-item,
+.drawer-validation-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 10px 12px;
+}
+
+.summary-matrix span,
+.raw-value-item span,
+.drawer-info-grid span {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.summary-matrix strong,
+.raw-value-item strong,
+.drawer-info-grid strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink);
+}
+
+.check-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  color: #334155;
+}
+
+.toolbar-shell--compact,
+.pagination-shell,
+.drawer-footer,
+.history-action-menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.imported-data-center__summary--wide {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.imported-table-shell {
+  max-height: min(74vh, 800px);
+}
+
+.imported-data-table {
+  min-width: 1500px;
+}
+
+.table-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  box-shadow: none;
+}
+
+.sort-indicator {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.sort-indicator.active {
+  color: var(--accent);
+}
+
+.drawer-backdrop {
+  align-items: stretch;
+  justify-content: flex-end;
+}
+
+.drawer-panel {
+  width: min(760px, 100%);
+  height: 100%;
+  border-radius: 20px 0 0 20px;
+  overflow: auto;
+}
+
+.data-drawer {
+  background: #f8fbff;
+  padding: 18px;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.drawer-content {
+  display: grid;
+  gap: 14px;
+  padding: 14px 0;
+}
+
+.drawer-card-section h5,
+.upload-info-card h3,
+.workflow-step-card strong,
+.payment-history-container h3 {
+  margin: 0;
+}
+
+.drawer-validation-list {
+  display: grid;
+  gap: 10px;
+}
+
+.drawer-validation-item p {
+  margin: 6px 0 0;
+}
+
+.drawer-validation-item.error strong {
+  color: #a32020;
+}
+
+.drawer-validation-item.warning strong {
+  color: #8a5a00;
+}
+
+.raw-values-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.payment-tab-card {
+  display: grid;
+  gap: 16px;
+}
+
+.workflow-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.workflow-tabs button {
+  background: #edf2ff;
+  color: #334155;
+  box-shadow: none;
+}
+
+.workflow-tabs button.active {
+  background: var(--ink);
+  color: white;
+}
+
+.payment-filter-form,
+.payment-settings-container,
+.payment-history-container {
+  display: grid;
+  gap: 16px;
+}
+
+.payment-history-container {
+  min-width: 0;
+}
+
+.history-table-shell,
+.table-shell.history-table-wrap {
+  max-height: min(70vh, 760px);
+}
+
+.history-table {
+  min-width: 1300px;
+}
+
+.history-action-menu {
+  position: relative;
+}
+
+.history-action-menu:hover .history-action-popover,
+.history-action-menu:focus-within .history-action-popover {
+  display: grid;
+}
+
+.history-action-popover {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 10;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 180px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+}
+
+.history-action-popover button {
+  width: 100%;
+  justify-content: flex-start;
+  box-shadow: none;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+}
+
+.history-action-popover button.danger-btn {
+  color: #a32020;
+}
+
+.payment-history-filters .filter-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.payment-tab-section .table-shell {
+  width: 100%;
+}
+
+.payment-tab-section .panel-surface {
+  min-width: 0;
 }
 
 .upload-panel {
@@ -341,30 +690,31 @@ button.secondary.danger {
   max-width: 180px;
 }
 
+/* Sticky columns
+   Dynamic offsets are provided via --sticky-left (set inline from ImportedDataCenter).
+   Do not use hard-coded left values; they break alignment when column visibility changes.
+*/
 .sticky-col {
   position: sticky;
-  left: 0;
-  z-index: 1;
+  left: var(--sticky-left, 0px);
+  z-index: 3;
   background: white;
 }
 
 .sticky-col-serial {
-  left: 0;
   min-width: 48px;
 }
 
 .sticky-col-select {
-  left: 0;
   min-width: 48px;
   background: #fff;
 }
 
 .sticky-col-truck {
-  left: 84px;
+  min-width: 84px;
 }
 
 .sticky-col-actions {
-  left: 0;
   min-width: 320px;
 }
 
@@ -745,9 +1095,59 @@ tr.has-issue {
   .modal-grid {
     grid-template-columns: 1fr 1fr;
   }
+
+  .workflow-step-grid,
+  .upload-layout-grid,
+  .settings-split-layout,
+  .payment-history-filters .filter-grid,
+  .imported-data-center__summary--wide {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 860px) {
+  .page-hero,
+  .toolbar-shell--compact,
+  .pagination-shell,
+  .drawer-footer,
+  .history-action-menu,
+  .payment-tab-header,
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .workflow-step-grid,
+  .upload-layout-grid,
+  .settings-split-layout,
+  .payment-history-filters .filter-grid,
+  .imported-data-center__summary--wide,
+  .upload-form-grid,
+  .drawer-edit-grid,
+  .drawer-info-grid,
+  .raw-values-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-form-card,
+  .upload-side-rail,
+  .drawer-panel,
+  .payment-tab-card,
+  .payment-history-filters {
+    border-radius: 16px;
+  }
+
+  .drawer-panel {
+    width: 100%;
+    height: auto;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .modal-backdrop.drawer-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
   .imported-data-center .filter-grid {
     grid-template-columns: 1fr;
   }
@@ -777,6 +1177,12 @@ tr.has-issue {
   .row-editor-grid,
   .modal-grid {
     grid-template-columns: 1fr;
+  }
+
+  .data-table,
+  .history-table,
+  .imported-data-table {
+    min-width: 900px;
   }
 }
 

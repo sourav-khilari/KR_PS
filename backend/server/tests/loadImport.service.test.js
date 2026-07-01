@@ -39,7 +39,7 @@ vi.mock('../src/models/OwnerMaster.js', () => ({
   }
 }));
 
-const { parseLoadWorkbook, previewLoadImport } = await import('../src/services/loadImport.service.js');
+const { finalizeImportSession, parseLoadWorkbook, previewLoadImport } = await import('../src/services/loadImport.service.js');
 
 function buildWorkbook() {
   const workbook = xlsx.utils.book_new();
@@ -80,7 +80,7 @@ describe('load import service', () => {
     expect(parsed.rows[1].normalizedRow.truckNo).toBe('KA01AA9999');
   });
 
-  it('creates a session and validates rows against seeded masters', async () => {
+  it('previews rows without persisting them', async () => {
     mocks.truckFindOne.mockImplementation((query) => ({
       populate: vi.fn().mockResolvedValue(
         query.normalizedTruckNumber === 'JH10DB3312'
@@ -97,12 +97,92 @@ describe('load import service', () => {
       updatedBy: 'user-1'
     });
 
-    expect(mocks.importSessionCreate).toHaveBeenCalledOnce();
-    expect(mocks.loadRowInsertMany).toHaveBeenCalledOnce();
+    expect(mocks.importSessionCreate).not.toHaveBeenCalled();
+    expect(mocks.loadRowInsertMany).not.toHaveBeenCalled();
     expect(result.session.fileName).toBe('master.xlsx');
+    expect(result.session.status).toBe('previewed');
     expect(result.rows).toHaveLength(2);
     expect(result.summary.warningCount).toBeGreaterThan(0);
     expect(result.messages.some((item) => item.field === 'truckNo')).toBe(true);
+  });
+
+  it('finalizes only validated rows after duplicate validation passes', async () => {
+    mocks.truckFindOne.mockImplementation((query) => ({
+      populate: vi.fn().mockResolvedValue(
+        query.normalizedTruckNumber === 'JH10DB3312'
+          ? { ownerId: { ownerName: 'Sharma Logistics', panNumber: 'ABCDE1234F' } }
+          : null
+      )
+    }));
+    mocks.loadRowFind.mockResolvedValue([]);
+
+    const preview = await previewLoadImport({
+      fileBuffer: buildWorkbook(),
+      fileName: 'master.xlsx',
+      uploadedBy: 'user-1',
+      createdBy: 'user-1',
+      updatedBy: 'user-1'
+    });
+
+    const validRows = preview.rows.filter((row) => !(row.validationMessages || []).some((item) => item.severity === 'error'));
+
+    const saved = await finalizeImportSession(
+      {
+        fileName: preview.session.fileName,
+        transportCompanyId: 'transport-1',
+        clientCompanyId: 'client-1',
+        plantId: 'plant-1',
+        sheetNames: preview.session.sheetNames,
+        rows: validRows
+      },
+      { id: 'user-1' }
+    );
+
+    expect(mocks.importSessionCreate).toHaveBeenCalledOnce();
+    expect(mocks.loadRowInsertMany).toHaveBeenCalledOnce();
+    expect(saved.session.status).toBe('saved');
+    expect(saved.rows).toHaveLength(1);
+    expect(mocks.loadRowInsertMany.mock.calls[0][0][0].transportCompanyId).toBe('transport-1');
+    expect(mocks.loadRowInsertMany.mock.calls[0][0][0].clientCompanyId).toBe('client-1');
+    expect(mocks.loadRowInsertMany.mock.calls[0][0][0].plantId).toBe('plant-1');
+  });
+
+  it('rejects finalize when duplicate invoice numbers exist before save', async () => {
+    mocks.truckFindOne.mockImplementation((query) => ({
+      populate: vi.fn().mockResolvedValue(
+        query.normalizedTruckNumber === 'JH10DB3312'
+          ? { ownerId: { ownerName: 'Sharma Logistics', panNumber: 'ABCDE1234F' } }
+          : null
+      )
+    }));
+    mocks.loadRowFind.mockResolvedValue([{ normalizedRow: { invNo: 'INV-1' } }]);
+
+    const preview = await previewLoadImport({
+      fileBuffer: buildWorkbook(),
+      fileName: 'master.xlsx',
+      uploadedBy: 'user-1',
+      createdBy: 'user-1',
+      updatedBy: 'user-1'
+    });
+
+    const validRows = preview.rows.filter((row) => !(row.validationMessages || []).some((item) => item.severity === 'error'));
+
+    await expect(
+      finalizeImportSession(
+        {
+          fileName: preview.session.fileName,
+          transportCompanyId: 'transport-1',
+          clientCompanyId: 'client-1',
+          plantId: 'plant-1',
+          sheetNames: preview.session.sheetNames,
+          rows: validRows
+        },
+        { id: 'user-1' }
+      )
+    ).rejects.toMatchObject({ statusCode: 400 });
+
+    expect(mocks.importSessionCreate).not.toHaveBeenCalled();
+    expect(mocks.loadRowInsertMany).not.toHaveBeenCalled();
   });
 });
 

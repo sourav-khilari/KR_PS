@@ -123,6 +123,7 @@ export function ImportedDataCenter() {
   const [editingRow, setEditingRow] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [savingEdit, setSavingEdit] = useState(false);
+  const [sortConfig, setSortConfig] = useState({ key: 'createdAt', direction: 'desc' });
   const [visibleColumns, setVisibleColumns] = useState(() => {
     if (typeof window === 'undefined') return DEFAULT_VISIBLE_COLUMNS;
     try {
@@ -148,6 +149,121 @@ export function ImportedDataCenter() {
 
   const visibleColumnDefs = useMemo(() => COLUMN_DEFS.filter((column) => column.essential || visibleColumns.includes(column.key)), [visibleColumns]);
 
+  function getSortableValue(row, columnKey) {
+    const normalized = row?.normalizedRow || {};
+    switch (columnKey) {
+      case 'serial':
+        return row?.sourceRowNumber ?? row?.rowNumber ?? 0;
+      case 'invoice':
+        return normalized.invNo || '';
+      case 'invoiceDate':
+        return normalized.invDate ? new Date(normalized.invDate).getTime() : 0;
+      case 'grRr':
+        return normalized.grRrNo || '';
+      case 'di':
+        return normalized.diNo || '';
+      case 'party':
+        return normalized.partyName || '';
+      case 'destination':
+        return normalized.destination || '';
+      case 'product':
+        return normalized.productName || '';
+      case 'truck':
+        return normalized.truckNo || '';
+      case 'owner':
+        return normalized.truckOwnerName || '';
+      case 'pan':
+        return normalized.panNo || '';
+      case 'qty':
+        return Number(normalized.qty || 0);
+      case 'rate':
+        return Number(normalized.frtPmt || 0);
+      case 'freight':
+        return Number(normalized.frtAmt || 0);
+      case 'billNo':
+        return normalized.billNo || '';
+      case 'billDate':
+        return normalized.billDate ? new Date(normalized.billDate).getTime() : 0;
+      case 'rfid':
+        return Number(normalized.rfidTag || 0);
+      case 'gps':
+        return Number(normalized.gpsInstall || 0);
+      case 'dieselLtr':
+        return Number(normalized.lessDieselLtr || 0);
+      case 'dieselAmt':
+        return Number(normalized.dieselAmount || 0);
+      case 'advance':
+        return Number(normalized.lessAdvance || 0);
+      case 'urea':
+        return Number(normalized.urea || 0);
+      case 'shortage':
+        return Number(normalized.bagShortage || 0);
+      case 'status':
+        return row?.approvalStatus || 'pending';
+      case 'client':
+        return row?.clientCompanyId?.companyName || '';
+      case 'plant':
+        return row?.plantId?.plantName || '';
+      default:
+        return row?.[columnKey] || '';
+    }
+  }
+
+  const displayedRows = useMemo(() => {
+    const sortKey = sortConfig.key;
+    const direction = sortConfig.direction === 'desc' ? -1 : 1;
+    return [...rows].sort((left, right) => {
+      const a = getSortableValue(left, sortKey);
+      const b = getSortableValue(right, sortKey);
+      if (typeof a === 'number' && typeof b === 'number') {
+        return (a - b) * direction;
+      }
+      return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }) * direction;
+    });
+  }, [rows, sortConfig]);
+
+  const summaryStats = useMemo(() => {
+    const total = rows.length;
+    const approved = rows.filter((row) => row.approvalStatus === 'approved').length;
+    const warnings = rows.filter((row) => (row.validationMessages || []).some((item) => item.severity === 'warning')).length;
+    const errors = rows.filter((row) => (row.validationMessages || []).some((item) => item.severity === 'error')).length;
+    const duplicates = rows.filter((row) => (row.validationMessages || []).some((item) => /duplicate|already exists/i.test(item.message || ''))).length;
+    return { total, approved, warnings, errors, duplicates };
+  }, [rows]);
+
+  function handleSort(columnKey) {
+    setSortConfig((current) => ({
+      key: columnKey,
+      direction: current.key === columnKey && current.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  }
+
+  function renderSortIndicator(columnKey) {
+    if (sortConfig.key !== columnKey) return <span className="sort-indicator">↕</span>;
+    return <span className="sort-indicator active">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>;
+  }
+
+  // Sticky column left offsets (in px) computed from visible column order.
+  // Important: do not hardcode offsets in CSS; offsets must adapt when visible columns change.
+  const STICKY_WIDTHS = useMemo(() => ({
+    select: 48,
+    serial: 48,
+    truck: 84, // used only when truck column exists
+    actions: 320
+  }), []);
+
+  const stickyLeftByKey = useMemo(() => {
+    let left = 0;
+    const map = {};
+    for (const col of visibleColumnDefs) {
+      if (col.key === 'select' || col.key === 'serial' || col.key === 'truck' || col.key === 'actions') {
+        map[col.key] = left;
+        left += STICKY_WIDTHS[col.key] ?? 0;
+      }
+    }
+    return map;
+  }, [visibleColumnDefs, STICKY_WIDTHS]);
+
   function toggleColumn(columnKey) {
     setVisibleColumns((current) => {
       if (current.includes(columnKey)) {
@@ -160,7 +276,7 @@ export function ImportedDataCenter() {
   function renderCellValue(column, row, index) {
     switch (column.key) {
       case 'select':
-        return <input type="checkbox" checked={selectedRowIds.includes(row._id)} onChange={() => toggleSelection(row._id)} />;
+        return <input type="checkbox" checked={selectedRowIds.includes(row._id)} onClick={(event) => event.stopPropagation()} onChange={() => toggleSelection(row._id)} />;
       case 'serial':
         return <span className="table-cell-truncate" title={String(index + 1)}>{index + 1}</span>;
       case 'invoice':
@@ -218,10 +334,10 @@ export function ImportedDataCenter() {
       case 'actions':
         return (
           <div className="action-group">
-            <button type="button" disabled={busyRowId === row._id} onClick={() => openEditModal(row)}>Edit</button>
-            <button type="button" disabled={busyRowId === row._id} onClick={() => handleRowAction(row, 'approve')}>Approve</button>
-            <button type="button" className="secondary" disabled={busyRowId === row._id} onClick={() => handleRowAction(row, 'reject')}>Reject</button>
-            <button type="button" className="secondary danger" disabled={busyRowId === row._id} onClick={() => handleRowAction(row, 'delete')}>Delete</button>
+            <button type="button" disabled={busyRowId === row._id} onClick={(event) => { event.stopPropagation(); openEditModal(row); }}>Edit</button>
+            <button type="button" disabled={busyRowId === row._id} onClick={(event) => { event.stopPropagation(); handleRowAction(row, 'approve'); }}>Approve</button>
+            <button type="button" className="secondary" disabled={busyRowId === row._id} onClick={(event) => { event.stopPropagation(); handleRowAction(row, 'reject'); }}>Reject</button>
+            <button type="button" className="secondary danger" disabled={busyRowId === row._id} onClick={(event) => { event.stopPropagation(); handleRowAction(row, 'delete'); }}>Delete</button>
           </div>
         );
       default:
@@ -285,12 +401,26 @@ export function ImportedDataCenter() {
     setSelectedRowIds((current) => (current.includes(rowId) ? current.filter((id) => id !== rowId) : [...current, rowId]));
   }
 
+  function openEditModal(row) {
+    setEditingRow(row);
+    setEditForm({
+      ...row.normalizedRow,
+      invDate: formatDateValue(row.normalizedRow?.invDate),
+      billDate: formatDateValue(row.normalizedRow?.billDate)
+    });
+  }
+
+  function closeEditModal() {
+    setEditingRow(null);
+    setEditForm({});
+  }
+
   function toggleSelectAll() {
-    if (selectedRowIds.length === rows.length) {
+    if (selectedRowIds.length === displayedRows.length) {
       setSelectedRowIds([]);
       return;
     }
-    setSelectedRowIds(rows.map((row) => row._id));
+    setSelectedRowIds(displayedRows.map((row) => row._id));
   }
 
   async function handleRowAction(row, action) {
@@ -313,7 +443,7 @@ export function ImportedDataCenter() {
   }
 
   async function handleBulkAction(action) {
-    const selectedRows = rows.filter((row) => selectedRowIds.includes(row._id));
+    const selectedRows = displayedRows.filter((row) => selectedRowIds.includes(row._id));
     if (!selectedRows.length) {
       setError('Select at least one row before applying an action.');
       return;
@@ -340,20 +470,6 @@ export function ImportedDataCenter() {
     }
   }
 
-  function openEditModal(row) {
-    setEditingRow(row);
-    setEditForm({
-      ...row.normalizedRow,
-      invDate: formatDateValue(row.normalizedRow?.invDate),
-      billDate: formatDateValue(row.normalizedRow?.billDate)
-    });
-  }
-
-  function closeEditModal() {
-    setEditingRow(null);
-    setEditForm({});
-  }
-
   async function saveEdit() {
     if (!editingRow?.importSessionId) return;
     setSavingEdit(true);
@@ -370,28 +486,39 @@ export function ImportedDataCenter() {
   }
 
   return (
-    <section className="panel-surface imported-data-center">
-      <div className="section-header compact">
+    <section className="panel-surface imported-data-center imported-data-shell">
+      <header className="page-hero data-center-hero">
         <div>
           <p className="eyebrow">Data operations</p>
           <h3>Imported Data Center</h3>
-          <p>Review imported rows, apply approvals, and refine values while keeping the workflow intact.</p>
+          <p className="muted-copy">Browse imported rows in a wide, table-first workspace with filters, summaries, and a single-row drawer.</p>
         </div>
-        <div className="summary-pill">{rows.length} visible rows</div>
-      </div>
+        <div className="hero-chip-stack">
+          <span className="summary-pill">{summaryStats.total} imported</span>
+          <span className="summary-pill">{summaryStats.approved} approved</span>
+        </div>
+      </header>
 
-      <div className="imported-data-center__summary">
+      <div className="imported-data-center__summary imported-data-center__summary--wide">
         <div className="metric-card">
-          <span>Visible rows</span>
-          <strong>{rows.length}</strong>
+          <span>Imported Rows</span>
+          <strong>{summaryStats.total}</strong>
         </div>
         <div className="metric-card">
-          <span>Selected</span>
-          <strong>{selectedRowIds.length}</strong>
+          <span>Approved</span>
+          <strong>{summaryStats.approved}</strong>
         </div>
         <div className="metric-card">
-          <span>Pages</span>
-          <strong>{pagination.pages || 1}</strong>
+          <span>Warnings</span>
+          <strong>{summaryStats.warnings}</strong>
+        </div>
+        <div className="metric-card">
+          <span>Errors</span>
+          <strong>{summaryStats.errors}</strong>
+        </div>
+        <div className="metric-card">
+          <span>Duplicates</span>
+          <strong>{summaryStats.duplicates}</strong>
         </div>
       </div>
 
@@ -410,9 +537,9 @@ export function ImportedDataCenter() {
         onClientCompanyChange={(event) => setFilters((current) => ({ ...current, clientCompanyId: event.target.value, plantId: '', page: 1 }))}
       />
 
-      <div className="toolbar-shell">
+      <div className="toolbar-shell toolbar-shell--compact">
         <DataTableToolbar
-          allVisibleSelected={rows.length > 0 && selectedRowIds.length === rows.length}
+          allVisibleSelected={displayedRows.length > 0 && selectedRowIds.length === displayedRows.length}
           onToggleSelectAll={toggleSelectAll}
           selectedCount={selectedRowIds.length}
           onApproveSelected={() => handleBulkAction('approve')}
@@ -433,30 +560,62 @@ export function ImportedDataCenter() {
         </details>
       </div>
 
-      {loading ? (
-        <div className="table-placeholder">Loading imported rows…</div>
-      ) : rows.length === 0 ? (
-        <div className="empty-state">
-          <h4>No imported rows found</h4>
-          <p>Adjust the filters or upload a new workbook to populate this view.</p>
-        </div>
-      ) : (
-        <div className="table-shell">
-          <table className="data-table">
+      <div className="table-shell imported-table-shell">
+        {loading ? (
+          <div className="table-placeholder">Loading imported rows…</div>
+        ) : displayedRows.length === 0 ? (
+          <div className="empty-state">
+            <h4>No imported rows found</h4>
+            <p>Adjust the filters or upload a new workbook to populate this view.</p>
+          </div>
+        ) : (
+          <table className="data-table imported-data-table">
             <thead>
               <tr>
                 {visibleColumnDefs.map((column) => (
-                  <th key={column.key} className={column.key === 'serial' ? 'sticky-col sticky-col-serial' : column.key === 'truck' ? 'sticky-col sticky-col-truck' : column.key === 'actions' ? 'sticky-col sticky-col-actions' : ''}>
-                    {column.label}
+                  <th
+                    key={column.key}
+                    className={
+                      column.key === 'select'
+                        ? 'sticky-col sticky-col-select'
+                        : column.key === 'serial'
+                          ? 'sticky-col sticky-col-serial'
+                          : column.key === 'truck'
+                            ? 'sticky-col sticky-col-truck'
+                            : column.key === 'actions'
+                              ? 'sticky-col sticky-col-actions'
+                              : ''
+                    }
+                    style={column.key === 'select' || column.key === 'serial' || column.key === 'truck' || column.key === 'actions' ? { '--sticky-left': `${stickyLeftByKey[column.key] ?? 0}px` } : undefined}
+                  >
+                    <button type="button" className="table-sort-btn" onClick={() => handleSort(column.key)}>
+                      <span>{column.label}</span>
+                      {renderSortIndicator(column.key)}
+                    </button>
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {rows.map((row, index) => (
-                <tr key={row._id} className={selectedRowIds.includes(row._id) ? 'selected-row' : ''}>
+              {displayedRows.map((row, index) => (
+                <tr key={row._id} className={selectedRowIds.includes(row._id) ? 'selected-row' : ''} onClick={() => openEditModal(row)}>
                   {visibleColumnDefs.map((column) => (
-                    <td key={column.key} className={column.key === 'select' ? 'sticky-col sticky-col-select' : column.key === 'serial' ? 'sticky-col sticky-col-serial' : column.key === 'truck' ? 'sticky-col sticky-col-truck' : column.key === 'actions' ? 'sticky-col sticky-col-actions' : ''}>
+                    <td
+                      key={column.key}
+                      className={
+                        column.key === 'select'
+                          ? 'sticky-col sticky-col-select'
+                          : column.key === 'serial'
+                            ? 'sticky-col sticky-col-serial'
+                            : column.key === 'truck'
+                              ? 'sticky-col sticky-col-truck'
+                              : column.key === 'actions'
+                                ? 'sticky-col sticky-col-actions'
+                                : ''
+                      }
+                      style={column.key === 'select' || column.key === 'serial' || column.key === 'truck' || column.key === 'actions' ? { '--sticky-left': `${stickyLeftByKey[column.key] ?? 0}px` } : undefined}
+                      onClick={column.key === 'actions' ? (event) => event.stopPropagation() : undefined}
+                    >
                       {renderCellValue(column, row, index)}
                     </td>
                   ))}
@@ -464,10 +623,10 @@ export function ImportedDataCenter() {
               ))}
             </tbody>
           </table>
-        </div>
-      )}
+        )}
+      </div>
 
-      <div className="table-actions">
+      <div className="table-actions pagination-shell">
         <span>Page {pagination.page} of {pagination.pages || 1}</span>
         <div className="action-row">
           <button type="button" disabled={pagination.page <= 1} onClick={() => setFilters((current) => ({ ...current, page: current.page - 1 }))}>Previous</button>
@@ -476,34 +635,120 @@ export function ImportedDataCenter() {
       </div>
 
       {editingRow && (
-        <div className="modal-backdrop">
-          <div className="modal-card">
-            <div className="section-header compact">
+        <div className="modal-backdrop drawer-backdrop" onClick={closeEditModal}>
+          <aside className="drawer-panel data-drawer" onClick={(event) => event.stopPropagation()}>
+            <div className="drawer-header">
               <div>
-                <p className="eyebrow">Edit row</p>
-                <h4>Edit Imported Row</h4>
+                <p className="eyebrow">Row details</p>
+                <h4>{editingRow.normalizedRow?.invNo || 'Imported row'}</h4>
+                <p className="muted-copy">{editingRow.normalizedRow?.truckNo || '-'} • {editingRow.normalizedRow?.truckOwnerName || '-'}</p>
               </div>
               <button type="button" className="secondary" onClick={closeEditModal}>Close</button>
             </div>
-            <div className="filter-grid modal-grid">
-              {IMPORT_ROW_FIELDS.map((field) => (
-                <label key={field.key} className="field-shell">
-                  <span>{field.label}</span>
-                  {field.type === 'date' ? (
-                    <input type="date" value={editForm[field.key] || ''} onChange={(event) => setEditForm((current) => ({ ...current, [field.key]: event.target.value }))} />
-                  ) : field.type === 'number' ? (
-                    <input type="number" value={editForm[field.key] ?? ''} onChange={(event) => setEditForm((current) => ({ ...current, [field.key]: event.target.value }))} />
-                  ) : (
-                    <input type="text" value={editForm[field.key] ?? ''} onChange={(event) => setEditForm((current) => ({ ...current, [field.key]: event.target.value }))} />
-                  )}
-                </label>
-              ))}
+
+            <div className="drawer-content">
+              <section className="drawer-card-section">
+                <h5>General Information</h5>
+                <div className="drawer-info-grid">
+                  <div><span>Sheet</span><strong>{editingRow.sourceSheetName || editingRow.sheetName || '-'}</strong></div>
+                  <div><span>Row</span><strong>{editingRow.sourceRowNumber || editingRow.rowNumber || '-'}</strong></div>
+                  <div><span>Status</span><strong className={`status-pill ${editingRow.approvalStatus || 'pending'}`}>{editingRow.approvalStatus || 'pending'}</strong></div>
+                  <div><span>Issues</span><strong>{(editingRow.validationMessages || []).length}</strong></div>
+                </div>
+              </section>
+
+              <section className="drawer-card-section">
+                <h5>Truck Information</h5>
+                <div className="drawer-info-grid">
+                  <div><span>Truck No</span><strong>{editingRow.normalizedRow?.truckNo || '-'}</strong></div>
+                  <div><span>Destination</span><strong>{editingRow.normalizedRow?.destination || '-'}</strong></div>
+                  <div><span>Product</span><strong>{editingRow.normalizedRow?.productName || '-'}</strong></div>
+                  <div><span>Invoice Date</span><strong>{formatDateValue(editingRow.normalizedRow?.invDate) || '-'}</strong></div>
+                </div>
+              </section>
+
+              <section className="drawer-card-section">
+                <h5>Owner Information</h5>
+                <div className="drawer-info-grid">
+                  <div><span>Owner Name</span><strong>{editingRow.normalizedRow?.truckOwnerName || '-'}</strong></div>
+                  <div><span>PAN</span><strong>{editingRow.normalizedRow?.panNo || '-'}</strong></div>
+                  <div><span>Transport Company</span><strong>{editingRow.transportCompanyId?.companyName || '-'}</strong></div>
+                  <div><span>Client Company</span><strong>{editingRow.clientCompanyId?.companyName || '-'}</strong></div>
+                </div>
+              </section>
+
+              <section className="drawer-card-section">
+                <h5>Payment Information</h5>
+                <div className="drawer-info-grid">
+                  <div><span>Qty</span><strong>{editingRow.normalizedRow?.qty ?? '-'}</strong></div>
+                  <div><span>Rate</span><strong>{editingRow.normalizedRow?.frtPmt ?? '-'}</strong></div>
+                  <div><span>Freight Amount</span><strong>{editingRow.normalizedRow?.frtAmt ?? '-'}</strong></div>
+                  <div><span>Diesel Amount</span><strong>{editingRow.normalizedRow?.dieselAmount ?? '-'}</strong></div>
+                  <div><span>Advance</span><strong>{editingRow.normalizedRow?.lessAdvance ?? '-'}</strong></div>
+                  <div><span>Shortage</span><strong>{editingRow.normalizedRow?.bagShortage ?? '-'}</strong></div>
+                </div>
+              </section>
+
+              <section className="drawer-card-section">
+                <h5>Validation</h5>
+                {editingRow.validationMessages?.length ? (
+                  <div className="drawer-validation-list">
+                    {editingRow.validationMessages.map((item, index) => (
+                      <div key={`${item.field}-${index}`} className={`drawer-validation-item ${item.severity}`}>
+                        <strong>{item.severity.toUpperCase()}</strong>
+                        <span>{item.field}</span>
+                        <p>{item.message}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-state compact">No validation issues found.</div>
+                )}
+              </section>
+
+              <section className="drawer-card-section">
+                <h5>Raw Imported Values</h5>
+                <div className="raw-values-grid">
+                  {Object.entries(editingRow.rawRow || {}).slice(0, 12).map(([key, value]) => (
+                    <div key={key} className="raw-value-item">
+                      <span>{key}</span>
+                      <strong>{String(value ?? '-')}</strong>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="drawer-card-section">
+                <h5>Editable Fields</h5>
+                <div className="drawer-edit-grid">
+                  {IMPORT_ROW_FIELDS.map((field) => (
+                    <label key={field.key} className="field-shell">
+                      <span>{field.label}</span>
+                      {field.type === 'date' ? (
+                        <input type="date" value={editForm[field.key] || ''} onChange={(event) => setEditForm((current) => ({ ...current, [field.key]: event.target.value }))} />
+                      ) : field.type === 'number' ? (
+                        <input type="number" value={editForm[field.key] ?? ''} onChange={(event) => setEditForm((current) => ({ ...current, [field.key]: event.target.value }))} />
+                      ) : (
+                        <input type="text" value={editForm[field.key] ?? ''} onChange={(event) => setEditForm((current) => ({ ...current, [field.key]: event.target.value }))} />
+                      )}
+                    </label>
+                  ))}
+                </div>
+              </section>
             </div>
-            <div className="table-actions">
-              <button type="button" onClick={saveEdit} disabled={savingEdit}>Save</button>
-              <button type="button" className="secondary" onClick={closeEditModal}>Cancel</button>
+
+            <div className="drawer-footer">
+              <div className="action-row">
+                <button type="button" onClick={() => handleRowAction(editingRow, 'approve')} disabled={busyRowId === editingRow._id}>Approve</button>
+                <button type="button" className="secondary" onClick={() => handleRowAction(editingRow, 'reject')} disabled={busyRowId === editingRow._id}>Reject</button>
+                <button type="button" className="secondary danger" onClick={() => handleRowAction(editingRow, 'delete')} disabled={busyRowId === editingRow._id}>Delete</button>
+              </div>
+              <div className="action-row">
+                <button type="button" onClick={saveEdit} disabled={savingEdit}>Save</button>
+                <button type="button" className="secondary" onClick={closeEditModal}>Cancel</button>
+              </div>
             </div>
-          </div>
+          </aside>
         </div>
       )}
     </section>

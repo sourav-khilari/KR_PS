@@ -166,6 +166,19 @@ export async function cancelImportSession(sessionId, token) {
 }
 
 export async function saveMasterImport(sessionId, token) {
+  if (sessionId && typeof sessionId === 'object') {
+    const response = await fetch(`${API_BASE_URL}/api/master-imports/save`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders(token)
+      },
+      body: JSON.stringify(sessionId)
+    });
+
+    return parseResponse(response);
+  }
+
   const response = await fetch(`${API_BASE_URL}/api/master-imports/save`, {
     method: 'POST',
     headers: {
