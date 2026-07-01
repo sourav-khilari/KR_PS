@@ -45,6 +45,40 @@ const DEFAULT_FILTERS = {
   endDate: ''
 };
 
+const COLUMN_DEFS = [
+  { key: 'select', label: 'Select', essential: true },
+  { key: 'serial', label: '#', essential: true },
+  { key: 'invoice', label: 'Invoice', essential: true },
+  { key: 'invoiceDate', label: 'Inv Date' },
+  { key: 'grRr', label: 'GR/RR' },
+  { key: 'di', label: 'DI' },
+  { key: 'party', label: 'Party' },
+  { key: 'destination', label: 'Destination' },
+  { key: 'product', label: 'Product' },
+  { key: 'truck', label: 'Truck', essential: true },
+  { key: 'owner', label: 'Owner', essential: true },
+  { key: 'pan', label: 'PAN' },
+  { key: 'qty', label: 'Qty' },
+  { key: 'rate', label: 'Rate' },
+  { key: 'freight', label: 'Freight' },
+  { key: 'billNo', label: 'Bill No' },
+  { key: 'billDate', label: 'Bill Date' },
+  { key: 'rfid', label: 'RFID' },
+  { key: 'gps', label: 'GPS' },
+  { key: 'dieselLtr', label: 'Diesel Ltr' },
+  { key: 'dieselAmt', label: 'Diesel Amt' },
+  { key: 'advance', label: 'Advance' },
+  { key: 'urea', label: 'Urea' },
+  { key: 'shortage', label: 'Shortage' },
+  { key: 'status', label: 'Status', essential: true },
+  { key: 'issues', label: 'Issues' },
+  { key: 'client', label: 'Client' },
+  { key: 'plant', label: 'Plant' },
+  { key: 'actions', label: 'Actions', essential: true }
+];
+
+const DEFAULT_VISIBLE_COLUMNS = ['select', 'serial', 'invoice', 'truck', 'owner', 'status', 'actions'];
+
 function formatDateValue(value) {
   if (!value) return '';
   if (value instanceof Date) return value.toISOString().split('T')[0];
@@ -89,11 +123,111 @@ export function ImportedDataCenter() {
   const [editingRow, setEditingRow] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [savingEdit, setSavingEdit] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState(() => {
+    if (typeof window === 'undefined') return DEFAULT_VISIBLE_COLUMNS;
+    try {
+      const stored = window.localStorage.getItem('imported-data-columns');
+      if (!stored) return DEFAULT_VISIBLE_COLUMNS;
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) && parsed.length ? parsed : DEFAULT_VISIBLE_COLUMNS;
+    } catch {
+      return DEFAULT_VISIBLE_COLUMNS;
+    }
+  });
 
   const filteredPlants = useMemo(() => {
     if (!filters.clientCompanyId) return plants;
     return plants.filter((plant) => plant.clientCompanyId?._id === filters.clientCompanyId || plant.clientCompanyId === filters.clientCompanyId);
   }, [filters.clientCompanyId, plants]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('imported-data-columns', JSON.stringify(visibleColumns));
+    }
+  }, [visibleColumns]);
+
+  const visibleColumnDefs = useMemo(() => COLUMN_DEFS.filter((column) => column.essential || visibleColumns.includes(column.key)), [visibleColumns]);
+
+  function toggleColumn(columnKey) {
+    setVisibleColumns((current) => {
+      if (current.includes(columnKey)) {
+        return current.filter((key) => key !== columnKey);
+      }
+      return [...current, columnKey];
+    });
+  }
+
+  function renderCellValue(column, row, index) {
+    switch (column.key) {
+      case 'select':
+        return <input type="checkbox" checked={selectedRowIds.includes(row._id)} onChange={() => toggleSelection(row._id)} />;
+      case 'serial':
+        return <span className="table-cell-truncate" title={String(index + 1)}>{index + 1}</span>;
+      case 'invoice':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.invNo || '-'}>{row.normalizedRow?.invNo || '-'}</span>;
+      case 'invoiceDate':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.invDate ? String(row.normalizedRow.invDate).slice(0, 10) : '-'}>{row.normalizedRow?.invDate ? String(row.normalizedRow.invDate).slice(0, 10) : '-'}</span>;
+      case 'grRr':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.grRrNo || '-'}>{row.normalizedRow?.grRrNo || '-'}</span>;
+      case 'di':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.diNo || '-'}>{row.normalizedRow?.diNo || '-'}</span>;
+      case 'party':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.partyName || '-'}>{row.normalizedRow?.partyName || '-'}</span>;
+      case 'destination':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.destination || '-'}>{row.normalizedRow?.destination || '-'}</span>;
+      case 'product':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.productName || '-'}>{row.normalizedRow?.productName || '-'}</span>;
+      case 'truck':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.truckNo || '-'}>{row.normalizedRow?.truckNo || '-'}</span>;
+      case 'owner':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.truckOwnerName || '-'}>{row.normalizedRow?.truckOwnerName || '-'}</span>;
+      case 'pan':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.panNo || '-'}>{row.normalizedRow?.panNo || '-'}</span>;
+      case 'qty':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.qty ?? '-'}>{row.normalizedRow?.qty ?? '-'}</span>;
+      case 'rate':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.frtPmt ?? '-'}>{row.normalizedRow?.frtPmt ?? '-'}</span>;
+      case 'freight':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.frtAmt ?? '-'}>{row.normalizedRow?.frtAmt ?? '-'}</span>;
+      case 'billNo':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.billNo || '-'}>{row.normalizedRow?.billNo || '-'}</span>;
+      case 'billDate':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.billDate ? String(row.normalizedRow.billDate).slice(0, 10) : '-'}>{row.normalizedRow?.billDate ? String(row.normalizedRow.billDate).slice(0, 10) : '-'}</span>;
+      case 'rfid':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.rfidTag ?? '-'}>{row.normalizedRow?.rfidTag ?? '-'}</span>;
+      case 'gps':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.gpsInstall ?? '-'}>{row.normalizedRow?.gpsInstall ?? '-'}</span>;
+      case 'dieselLtr':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.lessDieselLtr ?? '-'}>{row.normalizedRow?.lessDieselLtr ?? '-'}</span>;
+      case 'dieselAmt':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.dieselAmount ?? '-'}>{row.normalizedRow?.dieselAmount ?? '-'}</span>;
+      case 'advance':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.lessAdvance ?? '-'}>{row.normalizedRow?.lessAdvance ?? '-'}</span>;
+      case 'urea':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.urea ?? '-'}>{row.normalizedRow?.urea ?? '-'}</span>;
+      case 'shortage':
+        return <span className="table-cell-truncate" title={row.normalizedRow?.bagShortage ?? '-'}>{row.normalizedRow?.bagShortage ?? '-'}</span>;
+      case 'status':
+        return <span className={getStatusClass(row.approvalStatus || 'pending')}>{row.approvalStatus || 'pending'}</span>;
+      case 'issues':
+        return getIssueSummary(row) ? <div className="issue-stack">{getIssueSummary(row)}</div> : <span className="pill neutral">No issues</span>;
+      case 'client':
+        return <span className="table-cell-truncate" title={row.clientCompanyId?.companyName || '-'}>{row.clientCompanyId?.companyName || '-'}</span>;
+      case 'plant':
+        return <span className="table-cell-truncate" title={row.plantId?.plantName || '-'}>{row.plantId?.plantName || '-'}</span>;
+      case 'actions':
+        return (
+          <div className="action-group">
+            <button type="button" disabled={busyRowId === row._id} onClick={() => openEditModal(row)}>Edit</button>
+            <button type="button" disabled={busyRowId === row._id} onClick={() => handleRowAction(row, 'approve')}>Approve</button>
+            <button type="button" className="secondary" disabled={busyRowId === row._id} onClick={() => handleRowAction(row, 'reject')}>Reject</button>
+            <button type="button" className="secondary danger" disabled={busyRowId === row._id} onClick={() => handleRowAction(row, 'delete')}>Delete</button>
+          </div>
+        );
+      default:
+        return <span className="table-cell-truncate" title="-">-</span>;
+    }
+  }
 
   useEffect(() => {
     async function loadMasters() {
@@ -261,15 +395,28 @@ export function ImportedDataCenter() {
         onClientCompanyChange={(event) => setFilters((current) => ({ ...current, clientCompanyId: event.target.value, plantId: '', page: 1 }))}
       />
 
-      <DataTableToolbar
-        allVisibleSelected={rows.length > 0 && selectedRowIds.length === rows.length}
-        onToggleSelectAll={toggleSelectAll}
-        selectedCount={selectedRowIds.length}
-        onApproveSelected={() => handleBulkAction('approve')}
-        onRejectSelected={() => handleBulkAction('reject')}
-        onDeleteSelected={() => handleBulkAction('delete')}
-        busy={busyRowId === 'bulk'}
-      />
+      <div className="toolbar-shell">
+        <DataTableToolbar
+          allVisibleSelected={rows.length > 0 && selectedRowIds.length === rows.length}
+          onToggleSelectAll={toggleSelectAll}
+          selectedCount={selectedRowIds.length}
+          onApproveSelected={() => handleBulkAction('approve')}
+          onRejectSelected={() => handleBulkAction('reject')}
+          onDeleteSelected={() => handleBulkAction('delete')}
+          busy={busyRowId === 'bulk'}
+        />
+        <details className="column-picker">
+          <summary>Columns</summary>
+          <div className="column-picker-menu">
+            {COLUMN_DEFS.filter((column) => !column.essential).map((column) => (
+              <label key={column.key} className="checkbox-pill compact-checkbox">
+                <input type="checkbox" checked={visibleColumns.includes(column.key)} onChange={() => toggleColumn(column.key)} />
+                <span>{column.label}</span>
+              </label>
+            ))}
+          </div>
+        </details>
+      </div>
 
       {loading ? (
         <div className="table-placeholder">Loading imported rows…</div>
@@ -283,80 +430,21 @@ export function ImportedDataCenter() {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Select</th>
-                <th>Invoice</th>
-                <th>Inv Date</th>
-                <th>GR/RR</th>
-                <th>DI</th>
-                <th>Party</th>
-                <th>Destination</th>
-                <th>Product</th>
-                <th>Truck</th>
-                <th>Owner</th>
-                <th>PAN</th>
-                <th>Qty</th>
-                <th>Rate</th>
-                <th>Freight</th>
-                <th>Bill No</th>
-                <th>Bill Date</th>
-                <th>RFID</th>
-                <th>GPS</th>
-                <th>Diesel Ltr</th>
-                <th>Diesel Amt</th>
-                <th>Advance</th>
-                <th>Urea</th>
-                <th>Shortage</th>
-                <th>Status</th>
-                <th>Issues</th>
-                <th>Client</th>
-                <th>Plant</th>
-                <th>Actions</th>
+                {visibleColumnDefs.map((column) => (
+                  <th key={column.key} className={column.key === 'serial' ? 'sticky-col sticky-col-serial' : column.key === 'truck' ? 'sticky-col sticky-col-truck' : column.key === 'actions' ? 'sticky-col sticky-col-actions' : ''}>
+                    {column.label}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => (
+              {rows.map((row, index) => (
                 <tr key={row._id} className={selectedRowIds.includes(row._id) ? 'selected-row' : ''}>
-                  <td><input type="checkbox" checked={selectedRowIds.includes(row._id)} onChange={() => toggleSelection(row._id)} /></td>
-                  <td>{row.normalizedRow?.invNo || '-'}</td>
-                  <td>{row.normalizedRow?.invDate ? String(row.normalizedRow.invDate).slice(0, 10) : '-'}</td>
-                  <td>{row.normalizedRow?.grRrNo || '-'}</td>
-                  <td>{row.normalizedRow?.diNo || '-'}</td>
-                  <td>{row.normalizedRow?.partyName || '-'}</td>
-                  <td>{row.normalizedRow?.destination || '-'}</td>
-                  <td>{row.normalizedRow?.productName || '-'}</td>
-                  <td>{row.normalizedRow?.truckNo || '-'}</td>
-                  <td>{row.normalizedRow?.truckOwnerName || '-'}</td>
-                  <td>{row.normalizedRow?.panNo || '-'}</td>
-                  <td>{row.normalizedRow?.qty ?? '-'}</td>
-                  <td>{row.normalizedRow?.frtPmt ?? '-'}</td>
-                  <td>{row.normalizedRow?.frtAmt ?? '-'}</td>
-                  <td>{row.normalizedRow?.billNo || '-'}</td>
-                  <td>{row.normalizedRow?.billDate ? String(row.normalizedRow.billDate).slice(0, 10) : '-'}</td>
-                  <td>{row.normalizedRow?.rfidTag ?? '-'}</td>
-                  <td>{row.normalizedRow?.gpsInstall ?? '-'}</td>
-                  <td>{row.normalizedRow?.lessDieselLtr ?? '-'}</td>
-                  <td>{row.normalizedRow?.dieselAmount ?? '-'}</td>
-                  <td>{row.normalizedRow?.lessAdvance ?? '-'}</td>
-                  <td>{row.normalizedRow?.urea ?? '-'}</td>
-                  <td>{row.normalizedRow?.bagShortage ?? '-'}</td>
-                  <td><span className={getStatusClass(row.approvalStatus || 'pending')}>{row.approvalStatus || 'pending'}</span></td>
-                  <td>
-                    {getIssueSummary(row) ? (
-                      <div className="issue-stack">{getIssueSummary(row)}</div>
-                    ) : (
-                      <span className="pill neutral">No issues</span>
-                    )}
-                  </td>
-                  <td>{row.clientCompanyId?.companyName || '-'}</td>
-                  <td>{row.plantId?.plantName || '-'}</td>
-                  <td>
-                    <div className="action-group">
-                      <button type="button" disabled={busyRowId === row._id} onClick={() => openEditModal(row)}>Edit</button>
-                      <button type="button" disabled={busyRowId === row._id} onClick={() => handleRowAction(row, 'approve')}>Approve</button>
-                      <button type="button" className="secondary" disabled={busyRowId === row._id} onClick={() => handleRowAction(row, 'reject')}>Reject</button>
-                      <button type="button" className="secondary danger" disabled={busyRowId === row._id} onClick={() => handleRowAction(row, 'delete')}>Delete</button>
-                    </div>
-                  </td>
+                  {visibleColumnDefs.map((column) => (
+                    <td key={column.key} className={column.key === 'select' ? 'sticky-col sticky-col-select' : column.key === 'serial' ? 'sticky-col sticky-col-serial' : column.key === 'truck' ? 'sticky-col sticky-col-truck' : column.key === 'actions' ? 'sticky-col sticky-col-actions' : ''}>
+                      {renderCellValue(column, row, index)}
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
