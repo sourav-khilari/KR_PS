@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ForgotPasswordFlow } from '../../components/ForgotPasswordFlow.jsx';
 import { useAuth } from './AuthContext.jsx';
 
 export function LoginPage() {
@@ -7,6 +8,7 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -20,6 +22,16 @@ export function LoginPage() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  if (showForgotPassword) {
+    return (
+      <main className="login-page">
+        <section className="login-card auth-flow-layout">
+          <ForgotPasswordFlow onBackToLogin={() => setShowForgotPassword(false)} />
+        </section>
+      </main>
+    );
   }
 
   return (
@@ -56,6 +68,10 @@ export function LoginPage() {
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
+
+        <button type="button" className="link-button" onClick={() => setShowForgotPassword(true)}>
+          Forgot Password?
+        </button>
       </section>
     </main>
   );

@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../modules/auth/AuthContext.jsx';
-import { listPaymentRunsApi, getExcelExportUrl } from '../services/api.js';
+import { deletePaymentRunApi, listPaymentRunsApi, getExcelExportUrl } from '../services/api.js';
 
 export function PaymentHistory() {
   const { token } = useAuth();
   const [runs, setRuns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [deletingRunId, setDeletingRunId] = useState('');
+  const [pendingDeleteRun, setPendingDeleteRun] = useState(null);
 
   useEffect(() => {
     async function loadRuns() {
@@ -29,10 +32,28 @@ export function PaymentHistory() {
     window.open(url, '_blank');
   }
 
+  async function handleDeleteConfirmed() {
+    if (!pendingDeleteRun) return;
+    setDeletingRunId(pendingDeleteRun._id);
+    setError('');
+    setSuccess('');
+    try {
+      await deletePaymentRunApi(pendingDeleteRun._id, token);
+      setRuns((current) => current.filter((run) => run._id !== pendingDeleteRun._id));
+      setSuccess('Payment sheet deleted successfully.');
+    } catch (err) {
+      setError(err.message || 'Failed to delete payment sheet.');
+    } finally {
+      setDeletingRunId('');
+      setPendingDeleteRun(null);
+    }
+  }
+
   return (
     <div className="payment-history-container">
       <h3>Payout Sheets Generated History</h3>
       {error && <div className="alert error">{error}</div>}
+      {success && <div className="alert success">{success}</div>}
 
       {loading ? (
         <p>Loading run history logs...</p>
@@ -73,13 +94,23 @@ export function PaymentHistory() {
                       <span className="badge approved">Exported</span>
                     </td>
                     <td>
-                      <button
-                        type="button"
-                        className="download-btn"
-                        onClick={() => handleDownload(run._id)}
-                      >
-                        Download Excel (.xlsx)
-                      </button>
+                      <div className="history-action-group">
+                        <button
+                          type="button"
+                          className="download-btn"
+                          onClick={() => handleDownload(run._id)}
+                        >
+                          Download Excel (.xlsx)
+                        </button>
+                        <button
+                          type="button"
+                          className="delete-btn"
+                          disabled={deletingRunId === run._id}
+                          onClick={() => setPendingDeleteRun(run)}
+                        >
+                          {deletingRunId === run._id ? 'Deleting...' : 'Delete'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -93,6 +124,23 @@ export function PaymentHistory() {
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {pendingDeleteRun && (
+        <div className="modal-backdrop">
+          <div className="modal-card confirm-modal">
+            <h4>Delete payment sheet?</h4>
+            <p>Are you sure you want to delete this payment sheet history record?</p>
+            <div className="table-actions">
+              <button type="button" className="secondary" onClick={() => setPendingDeleteRun(null)}>
+                Cancel
+              </button>
+              <button type="button" className="danger-btn" onClick={handleDeleteConfirmed} disabled={deletingRunId === pendingDeleteRun._id}>
+                {deletingRunId === pendingDeleteRun._id ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

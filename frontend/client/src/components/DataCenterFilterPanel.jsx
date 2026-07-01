@@ -11,10 +11,10 @@ export function DataCenterFilterPanel({
   onClientCompanyChange
 }) {
   return (
-    <div className="panel-surface inner-panel">
+    <div className="panel-surface inner-panel filter-panel-card">
       <div className="section-header compact">
         <div>
-          <h4>Filters</h4>
+          <h4>Refine results</h4>
           <p className="muted-copy">Search and narrow the imported rows without changing backend behavior.</p>
         </div>
         <div className="action-row">

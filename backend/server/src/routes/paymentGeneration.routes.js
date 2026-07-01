@@ -3,6 +3,7 @@ import {
   getPreviewHandler,
   saveRunHandler,
   listHistoryHandler,
+  deleteHistoryHandler,
   getRunDetailsHandler,
   exportExcelHandler,
   getGlobalSettingsHandler,
@@ -18,6 +19,7 @@ const canGeneratePayments = requireRole(USER_ROLES.ADMIN, USER_ROLES.OPERATOR);
 router.get('/preview', canGeneratePayments, getPreviewHandler);
 router.post('/save', canGeneratePayments, saveRunHandler);
 router.get('/history', canGeneratePayments, listHistoryHandler);
+router.delete('/history/:runId', canGeneratePayments, deleteHistoryHandler);
 router.get('/master-prep-summary', canGeneratePayments, getMasterPrepSummaryHandler);
 router.get('/runs/:runId', canGeneratePayments, getRunDetailsHandler);
 router.get('/runs/:runId/export-excel', canGeneratePayments, exportExcelHandler);

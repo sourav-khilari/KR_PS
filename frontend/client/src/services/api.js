@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://kr-ps.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 async function parseResponse(response) {
   const data = await response.json().catch(() => ({}));
@@ -19,6 +19,42 @@ export async function loginRequest(credentials) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(credentials)
+  });
+
+  return parseResponse(response);
+}
+
+export async function forgotPasswordRequest(email) {
+  const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email })
+  });
+
+  return parseResponse(response);
+}
+
+export async function verifyForgotPasswordOtp(payload) {
+  const response = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  return parseResponse(response);
+}
+
+export async function resetForgotPassword(payload) {
+  const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
   });
 
   return parseResponse(response);
@@ -168,6 +204,14 @@ export async function savePaymentRunApi(payload, token) {
 
 export async function listPaymentRunsApi(token) {
   const response = await fetch(`${API_BASE_URL}/api/payments/history`, {
+    headers: authHeaders(token)
+  });
+  return parseResponse(response);
+}
+
+export async function deletePaymentRunApi(runId, token) {
+  const response = await fetch(`${API_BASE_URL}/api/payments/history/${runId}`, {
+    method: 'DELETE',
     headers: authHeaders(token)
   });
   return parseResponse(response);

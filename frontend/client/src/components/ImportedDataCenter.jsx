@@ -375,9 +375,24 @@ export function ImportedDataCenter() {
         <div>
           <p className="eyebrow">Data operations</p>
           <h3>Imported Data Center</h3>
-          <p>Review imported rows, apply approvals, and refine values while preserving the existing workflow.</p>
+          <p>Review imported rows, apply approvals, and refine values while keeping the workflow intact.</p>
         </div>
         <div className="summary-pill">{rows.length} visible rows</div>
+      </div>
+
+      <div className="imported-data-center__summary">
+        <div className="metric-card">
+          <span>Visible rows</span>
+          <strong>{rows.length}</strong>
+        </div>
+        <div className="metric-card">
+          <span>Selected</span>
+          <strong>{selectedRowIds.length}</strong>
+        </div>
+        <div className="metric-card">
+          <span>Pages</span>
+          <strong>{pagination.pages || 1}</strong>
+        </div>
       </div>
 
       {error && <div className="alert error">{error}</div>}

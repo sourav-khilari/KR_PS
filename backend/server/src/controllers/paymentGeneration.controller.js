@@ -43,6 +43,29 @@ export async function listHistoryHandler(req, res, next) {
   }
 }
 
+export async function deleteHistoryHandler(req, res, next) {
+  try {
+    const { runId } = req.params;
+    const run = await PaymentRun.findById(runId);
+    if (!run) {
+      const err = new Error('Payment run not found');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const blocks = await PaymentBlock.find({ paymentRunId: runId });
+    const blockIds = blocks.map((block) => block._id);
+
+    await PaymentRow.deleteMany({ paymentBlockId: { $in: blockIds } });
+    await PaymentBlock.deleteMany({ paymentRunId: runId });
+    await PaymentRun.findByIdAndDelete(runId);
+
+    res.json({ success: true, message: 'Payment sheet deleted successfully.' });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function getRunDetailsHandler(req, res, next) {
   try {
     const { runId } = req.params;
