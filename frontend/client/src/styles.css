@@ -60,8 +60,12 @@ button:disabled {
 .app-shell {
   display: grid;
   grid-template-columns: 280px 1fr;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+.app-shell.sidebar-collapsed {
+  grid-template-columns: 90px 1fr;
 }
 
 .login-panel {
@@ -71,6 +75,28 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  position: relative;
+  transition: width 0.25s ease, padding 0.25s ease;
+}
+
+.login-panel.collapsed {
+  width: 90px;
+  min-width: 90px;
+  padding: 20px 12px 20px 12px;
+}
+
+.login-panel.collapsed h1,
+.login-panel.collapsed p,
+.login-panel.collapsed .nav-menu,
+.login-panel.collapsed .logout-btn {
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+}
+
+.login-panel.collapsed .sidebar-toggle-wrapper {
+  justify-content: center;
 }
 
 .login-panel h1 {
@@ -85,7 +111,8 @@ button:disabled {
   padding: 28px;
   min-height: 100%;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: visible;
+  min-width: 0;
 }
 
 .panel-surface {
@@ -259,10 +286,12 @@ button:disabled {
 
 .imported-table-shell {
   max-height: min(74vh, 800px);
+  overflow-x: auto;
 }
 
 .imported-data-table {
-  min-width: 1500px;
+  min-width: 0;
+  width: 100%;
 }
 
 .table-sort-btn {
@@ -383,10 +412,12 @@ button:disabled {
 .history-table-shell,
 .table-shell.history-table-wrap {
   max-height: min(70vh, 760px);
+  overflow-x: auto;
 }
 
 .history-table {
-  min-width: 1300px;
+  min-width: 0;
+  width: 100%;
 }
 
 .history-action-menu {
@@ -631,7 +662,8 @@ button.secondary.danger {
 }
 
 .table-shell {
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: auto;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
   background: #fff;
@@ -642,6 +674,7 @@ button.secondary.danger {
   scrollbar-width: thin;
   flex: 1 1 auto;
   width: 100%;
+  min-width: 0;
 }
 
 .data-table {
@@ -1025,6 +1058,10 @@ tr.has-issue {
   margin: 20px 0;
 }
 
+.sidebar-collapsed .nav-menu {
+  display: none;
+}
+
 .nav-item-btn {
   background: transparent;
   color: #a5b4fc;
@@ -1164,6 +1201,7 @@ tr.has-issue {
 
   .table-shell {
     max-height: 60vh;
+    overflow-x: auto;
   }
   .app-shell {
     grid-template-columns: 1fr;
@@ -1182,7 +1220,8 @@ tr.has-issue {
   .data-table,
   .history-table,
   .imported-data-table {
-    min-width: 900px;
+    min-width: 0;
+    width: 100%;
   }
 }
 
@@ -1286,6 +1325,33 @@ tr.has-issue {
   border-radius: 6px;
   cursor: pointer;
   margin-top: auto;
+}
+
+.sidebar-toggle-wrapper {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.sidebar-toggle-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: white;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.sidebar-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.app-shell.sidebar-collapsed .workspace {
+  padding-left: 24px;
 }
 
 /* Payment Tab styles */

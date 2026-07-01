@@ -26,6 +26,9 @@ function Workspace() {
   const [transportCompanies, setTransportCompanies] = useState([]);
   const [clientCompanies, setClientCompanies] = useState([]);
   const [plants, setPlants] = useState([]);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const toggleSidebar = () => setSidebarCollapsed((current) => !current);
 
   const rows = preview?.rows || [];
   const messages = useMemo(() => rows.flatMap((row) => row.validationMessages || []), [rows]);
@@ -200,13 +203,19 @@ function Workspace() {
   }, [token]);
 
   return (
-    <main className="app-shell authenticated-shell">
-      <aside className="login-panel">
-        <h1>Truck Load Payments</h1>
-        <p>{user?.name}</p>
-        <p className="role-label">{user?.role}</p>
+    <main className={`app-shell authenticated-shell ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <aside className={`login-panel ${sidebarCollapsed ? 'collapsed' : ''}`}>
+        <div className="sidebar-toggle-wrapper">
+          <button type="button" className="sidebar-toggle-btn" onClick={toggleSidebar}>
+            {sidebarCollapsed ? '→' : '←'}
+          </button>
+        </div>
+        <div className="sidebar-content">
+          <h1>Truck Load Payments</h1>
+          <p>{user?.name}</p>
+          <p className="role-label">{user?.role}</p>
 
-        <nav className="nav-menu">
+          <nav className="nav-menu">
           <button
             type="button"
             className={`nav-item-btn ${activeMainTab === 'imports' ? 'active' : ''}`}
@@ -237,9 +246,10 @@ function Workspace() {
           </button>
         </nav>
 
-        <button type="button" className="logout-btn" onClick={logout}>
-          Logout
-        </button>
+          <button type="button" className="logout-btn" onClick={logout}>
+            Logout
+          </button>
+        </div>
       </aside>
 
       <section className="workspace">
