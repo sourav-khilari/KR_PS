@@ -163,7 +163,6 @@ function Workspace() {
         token
       );
       setSaveResult(result);
-      await fetchImportSessions();
       setPreview(null);
       setSelectedRow(null);
     } catch (apiError) {
