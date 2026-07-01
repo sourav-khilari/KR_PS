@@ -11,3 +11,5 @@ services:
         value: production
       - key: PORT
         value: 10000
+      - key: MONGODB_URI
+        value: "mongodb://127.0.0.1:27017/truck-payments"

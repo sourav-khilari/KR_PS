@@ -1,0 +1,7 @@
+{
+  "name": "kr-backend",
+  "private": true,
+  "scripts": {
+    "start": "npm start --prefix server"
+  }
+}
