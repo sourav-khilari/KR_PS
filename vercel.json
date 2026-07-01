@@ -12,5 +12,6 @@
   "routes": [
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/frontend/client/dist/index.html" }
-  ]
+  ],
+  "outputDirectory": "frontend/client/dist"
 }
