@@ -262,7 +262,8 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
           repeatedTripIndex: index
         });
 
-        const comm = resolvedComm.amount;
+        // Round commission to whole rupees and use the rounded value for all downstream calculations
+        const comm = Math.round(resolvedComm.amount);
         const gross = amount - comm;
         const netAmount = gross - bagShortage - diesel - cashAdvance - rfidGps;
 
@@ -292,7 +293,8 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
           commissionUsed: {
             type: resolvedComm.type,
             value: resolvedComm.value,
-            amount: resolvedComm.amount,
+            // store the rounded commission amount (used for display and calculations)
+            amount: comm,
             source: resolvedComm.source,
             matchedRuleId: resolvedComm.matchedRuleId,
             fallbackUsed: resolvedComm.fallbackUsed
