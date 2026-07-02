@@ -190,6 +190,14 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
     }
   );
 
+  const totalDeductions = (
+    overallTotals.totalDiesel +
+    overallTotals.totalCashAdvance +
+    overallTotals.totalShortage +
+    overallTotals.totalTds +
+    overallTotals.totalRfidGps
+  );
+
   return (
     <div className="payment-preview-container">
       <header className="preview-action-header">
@@ -394,28 +402,50 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
             <strong>{overallTotals.totalQty.toFixed(2)}</strong>
           </div>
           <div>
-            <span>Total Gross</span>
-            <strong>₹{overallTotals.totalGross}</strong>
+            <span>Total Amount</span>
+            <strong>₹{overallTotals.totalAmount.toFixed(2)}</strong>
+          </div>
+          <div>
+            <span>Total Commission</span>
+            <strong>₹{overallTotals.totalCommission.toFixed(2)}</strong>
           </div>
           <div>
             <span>CGST + SGST</span>
             <strong>₹{overallTotals.totalGst.toFixed(2)}</strong>
           </div>
-          <div>
-            <span>Deductions</span>
-            <strong>
-              -₹
-              {(
-                overallTotals.totalDiesel +
-                overallTotals.totalCashAdvance +
-                overallTotals.totalShortage +
-                overallTotals.totalTds
-              ).toFixed(2)}
-            </strong>
-          </div>
           <div className="payout-total">
             <span>Net Payable</span>
             <strong>₹{overallTotals.totalNetPayable}</strong>
+          </div>
+        </div>
+
+        <div className="overall-breakdown-grid" style={{ marginTop: 16 }}>
+          <h5 style={{ margin: '0 0 8px 0', color: '#e2e8f0' }}>Deductions Breakdown</h5>
+          <div className="overall-breakdown-items" style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+            <div>
+              <span>Diesel</span>
+              <div style={{ fontWeight: 700 }}>₹{Number(overallTotals.totalDiesel || 0).toFixed(2)}</div>
+            </div>
+            <div>
+              <span>Cash Advance</span>
+              <div style={{ fontWeight: 700 }}>₹{Number(overallTotals.totalCashAdvance || 0).toFixed(2)}</div>
+            </div>
+            <div>
+              <span>RFID + GPS</span>
+              <div style={{ fontWeight: 700 }}>₹{Number(overallTotals.totalRfidGps || 0).toFixed(2)}</div>
+            </div>
+            <div>
+              <span>Shortage</span>
+              <div style={{ fontWeight: 700 }}>₹{Number(overallTotals.totalShortage || 0).toFixed(2)}</div>
+            </div>
+            <div>
+              <span>TDS</span>
+              <div style={{ fontWeight: 700 }}>₹{Number(overallTotals.totalTds || 0).toFixed(2)}</div>
+            </div>
+            <div>
+              <span style={{ color: '#94a3b8' }}>Total Deductions</span>
+              <div style={{ fontWeight: 800, color: '#fca5a5' }}>-₹{Number(totalDeductions).toFixed(2)}</div>
+            </div>
           </div>
         </div>
       </footer>

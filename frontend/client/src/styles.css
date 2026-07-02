@@ -1745,6 +1745,26 @@ tr.has-issue {
   color: #38bdf8;
 }
 
+.overall-breakdown-grid {
+  margin-top: 12px;
+}
+
+.overall-breakdown-items div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(255,255,255,0.02);
+  padding: 8px 12px;
+  border-radius: 6px;
+  min-width: 140px;
+}
+
+.overall-breakdown-items span {
+  color: #94a3b8;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
 .history-table-wrap table button.download-btn {
   background: #10b981;
   color: white;
