@@ -169,6 +169,33 @@ function clonePreviewRows(rows = []) {
   }));
 }
 
+async function revalidatePreviewRows(rows = []) {
+  const revalidated = [];
+
+  for (const row of rows) {
+    const normalizedRow = row.normalizedRow || {};
+    const masterMatch = await compareWithMaster(normalizedRow);
+    const validationMessages = validateNormalizedRow(
+      normalizedRow,
+      row.sourceRowNumber ?? row.rowNumber,
+      masterMatch,
+      row.rawRow
+    );
+    const counts = countBySeverity(validationMessages);
+
+    revalidated.push({
+      ...row,
+      masterMatch,
+      validationMessages,
+      errorCount: counts.errorCount,
+      warningCount: counts.warningCount,
+      infoCount: counts.infoCount
+    });
+  }
+
+  return revalidated;
+}
+
 function countWarnings(rows = []) {
   return rows.reduce(
     (count, row) => count + (row.validationMessages || []).filter((item) => item.severity === 'warning').length,
@@ -355,22 +382,39 @@ export async function finalizeImportSession(payload, currentUser) {
     throw error;
   }
 
-  const rowsWithDuplicateChecks = await attachDuplicateInvoiceValidation(clonePreviewRows(rows));
+  const rowsToValidate = await revalidatePreviewRows(rows);
+  const rowsWithDuplicateChecks = await attachDuplicateInvoiceValidation(rowsToValidate);
+  const duplicateRows = rowsWithDuplicateChecks.filter((row) => row.skipInsert);
   const invalidRows = rowsWithDuplicateChecks.filter((row) => row.skipInsert || hasErrorMessages(row.validationMessages || []));
 
   if (invalidRows.length > 0) {
-    const duplicateInvoices = invalidRows
+    const duplicateInvoices = duplicateRows
       .map((row) => normalizeInvoiceReference(row.normalizedRow?.invNo))
       .filter(Boolean);
+    const errorRows = invalidRows.filter((row) => !row.skipInsert || duplicateRows.includes(row));
+    const rowNumbers = [...new Set(invalidRows.map((row) => row.sourceRowNumber ?? row.rowNumber))].join(', ');
+    const uniqueErrorMessages = [
+      ...new Set(
+        invalidRows
+          .flatMap((row) => row.validationMessages || [])
+          .filter((message) => message.severity === 'error')
+          .map((message) => message.message)
+      )
+    ];
+
     const error = new Error(
       duplicateInvoices.length
         ? `Duplicate invoice number(s) found: ${[...new Set(duplicateInvoices)].join(', ')}`
-        : 'Validated rows contain errors and cannot be saved'
+        : `Validation errors found in row(s) ${rowNumbers}: ${uniqueErrorMessages.join('; ')}`
     );
     error.statusCode = 400;
     error.details = {
       duplicateInvoices: [...new Set(duplicateInvoices)],
-      rows: invalidRows
+      invalidRows: invalidRows.map((row) => ({
+        rowNumber: row.sourceRowNumber ?? row.rowNumber,
+        invoice: normalizeInvoiceReference(row.normalizedRow?.invNo),
+        messages: (row.validationMessages || []).filter((message) => message.severity === 'error').map((message) => message.message)
+      }))
     };
     throw error;
   }

@@ -147,6 +147,52 @@ describe('load import service', () => {
     expect(mocks.loadRowInsertMany.mock.calls[0][0][0].plantId).toBe('plant-1');
   });
 
+  it('revalidates preview rows and ignores stale duplicate validation errors before save', async () => {
+    mocks.truckFindOne.mockImplementation((query) => ({
+      populate: vi.fn().mockResolvedValue(
+        query.normalizedTruckNumber === 'JH10DB3312'
+          ? { ownerId: { ownerName: 'Sharma Logistics', panNumber: 'ABCDE1234F' } }
+          : null
+      )
+    }));
+    mocks.loadRowFind.mockResolvedValue([]);
+
+    const preview = await previewLoadImport({
+      fileBuffer: buildWorkbook(),
+      fileName: 'master.xlsx',
+      uploadedBy: 'user-1',
+      createdBy: 'user-1',
+      updatedBy: 'user-1'
+    });
+
+    const staleRow = {
+      ...preview.rows[0],
+      validationMessages: [
+        {
+          rowNumber: preview.rows[0].rowNumber,
+          field: 'invNo',
+          severity: 'error',
+          message: 'Invoice number INV-1 already exists in the database and will not be inserted'
+        }
+      ]
+    };
+
+    const saved = await finalizeImportSession(
+      {
+        fileName: preview.session.fileName,
+        transportCompanyId: 'transport-1',
+        clientCompanyId: 'client-1',
+        plantId: 'plant-1',
+        sheetNames: preview.session.sheetNames,
+        rows: [staleRow]
+      },
+      { id: 'user-1' }
+    );
+
+    expect(saved.rows).toHaveLength(1);
+    expect(mocks.loadRowInsertMany).toHaveBeenCalled();
+  });
+
   it('stores saved row invDate as a Date when finalizing import', async () => {
     mocks.truckFindOne.mockImplementation((query) => ({
       populate: vi.fn().mockResolvedValue(
@@ -216,6 +262,50 @@ describe('load import service', () => {
         { id: 'user-1' }
       )
     ).rejects.toMatchObject({ statusCode: 400 });
+
+    expect(mocks.importSessionCreate).not.toHaveBeenCalled();
+    expect(mocks.loadRowInsertMany).not.toHaveBeenCalled();
+  });
+
+  it('rejects finalize with validation errors but does not show duplicate invoice message unless invoice is actually duplicate', async () => {
+    mocks.truckFindOne.mockImplementation((query) => ({
+      populate: vi.fn().mockResolvedValue(
+        query.normalizedTruckNumber === 'JH10DB3312'
+          ? { ownerId: { ownerName: 'Sharma Logistics', panNumber: 'ABCDE1234F' } }
+          : null
+      )
+    }));
+    mocks.loadRowFind.mockResolvedValue([]);
+
+    const preview = await previewLoadImport({
+      fileBuffer: buildWorkbook(),
+      fileName: 'master.xlsx',
+      uploadedBy: 'user-1',
+      createdBy: 'user-1',
+      updatedBy: 'user-1'
+    });
+
+    const rowsWithErrors = preview.rows.filter((row) => (row.validationMessages || []).some((item) => item.severity === 'error'));
+
+    await expect(
+      finalizeImportSession(
+        {
+          fileName: preview.session.fileName,
+          transportCompanyId: 'transport-1',
+          clientCompanyId: 'client-1',
+          plantId: 'plant-1',
+          sheetNames: preview.session.sheetNames,
+          rows: rowsWithErrors
+        },
+        { id: 'user-1' }
+      )
+    ).rejects.toMatchObject({
+      statusCode: 400,
+      message: /^Validation errors found in row\(s\) \d+: /,
+      details: {
+        invalidRows: expect.any(Array)
+      }
+    });
 
     expect(mocks.importSessionCreate).not.toHaveBeenCalled();
     expect(mocks.loadRowInsertMany).not.toHaveBeenCalled();

@@ -22,6 +22,7 @@ function Workspace() {
   const [isLoading, setIsLoading] = useState(false);
   const [saveResult, setSaveResult] = useState(null);
   const [error, setError] = useState('');
+  const [errorDetails, setErrorDetails] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [transportCompanies, setTransportCompanies] = useState([]);
   const [clientCompanies, setClientCompanies] = useState([]);
@@ -96,8 +97,11 @@ function Workspace() {
         ...result,
         metadata: buildPreviewMetadata(transportCompanyId, clientCompanyId, plantId)
       });
+      setError('');
+      setErrorDetails(null);
     } catch (apiError) {
       setError(apiError.message);
+      setErrorDetails(apiError.details || null);
     } finally {
       setIsLoading(false);
     }
@@ -168,8 +172,11 @@ function Workspace() {
       setSaveResult(result);
       setPreview(null);
       setSelectedRow(null);
+      setError('');
+      setErrorDetails(null);
     } catch (apiError) {
       setError(apiError.message);
+      setErrorDetails(apiError.details || null);
     } finally {
       setIsLoading(false);
     }
@@ -263,7 +270,29 @@ function Workspace() {
               plants={plants}
             />
 
-            {error && <div className="alert error">{error}</div>}
+            {error && (
+              <div className="alert error">
+                <p>{error}</p>
+                {errorDetails?.duplicateInvoices && (
+                  <p>Duplicate invoices: {errorDetails.duplicateInvoices.join(', ')}</p>
+                )}
+                {errorDetails?.invalidRows && (
+                  <div className="error-details">
+                    <p>Validation issues:</p>
+                    <ul>
+                      {errorDetails.invalidRows.slice(0, 5).map((row) => (
+                        <li key={`${row.invoice}-${row.rowNumber}`}>
+                          Row {row.rowNumber}: {row.messages.join('; ')}
+                        </li>
+                      ))}
+                      {errorDetails.invalidRows.length > 5 && (
+                        <li>And {errorDetails.invalidRows.length - 5} more rows with errors.</li>
+                      )}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
             {saveResult && (
               <div className="alert success">
                 Saved import {saveResult.id} with {saveResult.rowCount} rows.

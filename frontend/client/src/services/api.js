@@ -3,7 +3,9 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000
 async function parseResponse(response) {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.message || 'Request failed');
+    const err = new Error(data.message || 'Request failed');
+    if (data.details) err.details = data.details;
+    throw err;
   }
   return data;
 }
