@@ -38,7 +38,22 @@ function parseMaybeNumber(value) {
 function parseMaybeDate(value) {
   if (value === null || value === undefined || value === '') return null;
   if (value instanceof Date && !Number.isNaN(value.getTime())) return value;
-  const parsed = new Date(value);
+
+  const text = String(value).trim();
+  const dotSlashMatch = text.match(/^\s*(\d{1,2})[\/\.\-](\d{1,2})[\/\.\-](\d{2,4})\s*$/);
+  if (dotSlashMatch) {
+    let [, day, month, year] = dotSlashMatch;
+    day = Number(day);
+    month = Number(month);
+    year = Number(year);
+    if (year < 100) {
+      year += year >= 50 ? 1900 : 2000;
+    }
+    const parsed = new Date(Date.UTC(year, month - 1, day));
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+  }
+
+  const parsed = new Date(text);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
