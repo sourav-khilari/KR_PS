@@ -7,27 +7,27 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
   function buildSummaryRows(summaryValues = {}) {
     if (summaryValues.gstApplicable === false) {
       return [
-        { key: 'taxableValue', label: 'TAXABLE VALUE', value: summaryValues.taxableValue || 0 },
-        { key: 'lessDiesel', label: 'LESS: DIESEL', value: summaryValues.lessDiesel || 0 },
-        { key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summaryValues.lessCashAdvance || 0 },
-        { key: 'lessShortage', label: 'LESS: SHORTAGE', value: summaryValues.lessShortage || 0 },
-        { key: 'lessTds', label: 'LESS: TDS', value: summaryValues.lessTds || 0 },
-        { key: 'roundOff', label: 'ROUND OFF', value: summaryValues.roundOff || 0 },
-        { key: 'netPayable', label: 'NET PAYABLE', value: summaryValues.netPayable || 0 }
+        { templateRow: 10, key: 'taxableValue', label: 'TAXABLE VALUE', value: summaryValues.taxableValue || 0 },
+        { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: summaryValues.lessDiesel || 0 },
+        { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summaryValues.lessCashAdvance || 0 },
+        { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: summaryValues.lessShortage || 0 },
+        { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: summaryValues.lessTds || 0 },
+        { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: summaryValues.roundOff || 0 },
+        { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: summaryValues.netPayable || 0 }
       ];
     }
 
     return [
-      { key: 'taxableValue', label: 'TAXABLE VALUE', value: summaryValues.taxableValue || 0 },
-      { key: 'cgst', label: `ADD: CGST @${summaryValues.cgstRate ?? settings.cgstRate ?? 0}%`, value: summaryValues.cgst || 0 },
-      { key: 'sgst', label: `ADD: SGST @${summaryValues.sgstRate ?? settings.sgstRate ?? 0}%`, value: summaryValues.sgst || 0 },
-      { key: 'netBillAmount', label: 'NET BILL AMOUNT', value: summaryValues.netBillAmount || 0 },
-      { key: 'lessDiesel', label: 'LESS: DIESEL', value: summaryValues.lessDiesel || 0 },
-      { key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summaryValues.lessCashAdvance || 0 },
-      { key: 'lessShortage', label: 'LESS: SHORTAGE', value: summaryValues.lessShortage || 0 },
-      { key: 'lessTds', label: 'LESS: TDS', value: summaryValues.lessTds || 0 },
-      { key: 'roundOff', label: 'ROUND OFF', value: summaryValues.roundOff || 0 },
-      { key: 'netPayable', label: 'NET PAYABLE', value: summaryValues.netPayable || 0 }
+      { templateRow: 10, key: 'taxableValue', label: 'TAXABLE VALUE', value: summaryValues.taxableValue || 0 },
+      { templateRow: 11, key: 'cgst', label: `ADD: CGST @${summaryValues.cgstRate ?? settings.cgstRate ?? 0}%`, value: summaryValues.cgst || 0 },
+      { templateRow: 12, key: 'sgst', label: `ADD: SGST @${summaryValues.sgstRate ?? settings.sgstRate ?? 0}%`, value: summaryValues.sgst || 0 },
+      { templateRow: 13, key: 'netBillAmount', label: 'NET BILL AMOUNT', value: summaryValues.netBillAmount || 0 },
+      { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: summaryValues.lessDiesel || 0 },
+      { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summaryValues.lessCashAdvance || 0 },
+      { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: summaryValues.lessShortage || 0 },
+      { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: summaryValues.lessTds || 0 },
+      { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: summaryValues.roundOff || 0 },
+      { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: summaryValues.netPayable || 0 }
     ];
   }
 

@@ -526,6 +526,13 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
 export async function savePaymentRun(payload, currentUser) {
   const { periodStart, periodEnd, blocks, totals } = payload;
 
+  // Basic payload logging for diagnostics (keeps size small)
+  try {
+    console.log('[savePaymentRun] saving run for period', periodStart, '-', periodEnd, 'blocks:', (blocks || []).length);
+  } catch (e) {
+    // ignore logging errors
+  }
+
   const run = await PaymentRun.create({
     periodStart,
     periodEnd,
@@ -535,9 +542,9 @@ export async function savePaymentRun(payload, currentUser) {
     status: 'generated',
     generatedBy: currentUser?.id || currentUser?._id
   });
-
-  for (const block of blocks) {
-    const createdBlock = await PaymentBlock.create({
+  for (const [blockIndex, block] of (blocks || []).entries()) {
+    try {
+      const createdBlock = await PaymentBlock.create({
       paymentRunId: run._id,
       ownerId: block.ownerId,
       ownerNameSnapshot: block.ownerNameSnapshot,
@@ -553,29 +560,84 @@ export async function savePaymentRun(payload, currentUser) {
       summaryValues: block.summaryValues,
       status: 'approved'
     });
+      // Sanitize and validate rows before insert
+      const rowsToInsert = (block.rows || []).map((r, rowIndex) => {
+        const invoiceDate = r.invoiceDate ? new Date(r.invoiceDate) : null;
+        const cashAdvanceDate = r.cashAdvanceDate ? new Date(r.cashAdvanceDate) : null;
 
-    const rowsToInsert = block.rows.map((r) => ({
-      paymentBlockId: createdBlock._id,
-      paymentRunId: run._id,
-      sourceImportRowIds: r.sourceImportRowIds,
-      truckNo: r.truckNo,
-      invoiceDate: r.invoiceDate,
-      partyName: r.partyName,
-      destination: r.destination,
-      cashAdvanceDate: r.cashAdvanceDate,
-      repeatedTrip: r.repeatedTrip,
-      rowValues: r.rowValues,
-      commissionUsed: r.commissionUsed,
-      gstUsed: r.gstUsed,
-      tdsUsed: r.tdsUsed,
-      netPayableUsed: r.netPayableUsed
-    }));
+        if (!invoiceDate || Number.isNaN(invoiceDate.getTime())) {
+          const details = {
+            message: 'Invalid invoiceDate for row',
+            blockIndex,
+            blockOwner: block.ownerNameSnapshot,
+            rowIndex,
+            sourceImportRowIds: r.sourceImportRowIds
+          };
+          const err = new Error('Invalid invoiceDate in one of the rows. Save aborted.');
+          err.statusCode = 400;
+          err.details = details;
+          throw err;
+        }
 
-    await PaymentRow.insertMany(rowsToInsert);
+        return {
+          paymentBlockId: createdBlock._id,
+          paymentRunId: run._id,
+          sourceImportRowIds: (r.sourceImportRowIds || []).map((id) => String(id)),
+          truckNo: String(r.truckNo || ''),
+          invoiceDate,
+          partyName: r.partyName || '',
+          destination: r.destination || '',
+          cashAdvanceDate: cashAdvanceDate && !Number.isNaN(cashAdvanceDate.getTime()) ? cashAdvanceDate : null,
+          repeatedTrip: Boolean(r.repeatedTrip),
+          rowValues: {
+            qty: Number(r.rowValues?.qty || 0),
+            rate: Number(r.rowValues?.rate || 0),
+            amount: Number(r.rowValues?.amount || 0),
+            comm: Number(r.rowValues?.comm || 0),
+            gross: Number(r.rowValues?.gross || 0),
+            diesel: Number(r.rowValues?.diesel || 0),
+            cashAdvance: Number(r.rowValues?.cashAdvance || 0),
+            rfid: Number(r.rowValues?.rfid || 0),
+            gps: Number(r.rowValues?.gps || 0),
+            rfidGps: Number(r.rowValues?.rfidGps || 0),
+            urea: Number(r.rowValues?.urea || 0),
+            bagShortage: Number(r.rowValues?.bagShortage || 0),
+            netAmount: Number(r.rowValues?.netAmount || 0)
+          },
+          commissionUsed: {
+            type: r.commissionUsed?.type || 'fixed',
+            value: Number(r.commissionUsed?.value || 0),
+            amount: Number(r.commissionUsed?.amount || 0),
+            source: r.commissionUsed?.source || '',
+            matchedRuleId: r.commissionUsed?.matchedRuleId || null,
+            fallbackUsed: Boolean(r.commissionUsed?.fallbackUsed)
+          },
+          gstUsed: {
+            applicable: r.gstUsed?.applicable !== false,
+            cgstRate: Number(r.gstUsed?.cgstRate || 0),
+            sgstRate: Number(r.gstUsed?.sgstRate || 0),
+            cgstAmount: Number(r.gstUsed?.cgstAmount || 0),
+            sgstAmount: Number(r.gstUsed?.sgstAmount || 0),
+            netBillAmount: Number(r.gstUsed?.netBillAmount || 0)
+          },
+          tdsUsed: {
+            rate: Number(r.tdsUsed?.rate || 0),
+            amount: Number(r.tdsUsed?.amount || 0)
+          },
+          netPayableUsed: Number(r.netPayableUsed || 0)
+        };
+      });
 
-    // Update source LoadRows
-    const rowIds = block.rows.flatMap((r) => r.sourceImportRowIds);
-    await LoadRow.updateMany({ _id: { $in: rowIds } }, { approvalStatus: 'approved' });
+      await PaymentRow.insertMany(rowsToInsert);
+
+      // Update source LoadRows
+      const rowIds = (block.rows || []).flatMap((r) => r.sourceImportRowIds || []);
+      await LoadRow.updateMany({ _id: { $in: rowIds } }, { approvalStatus: 'approved' });
+    } catch (err) {
+      // add context and rethrow so controller middleware returns useful details
+      console.error('[savePaymentRun] error processing block', blockIndex, 'owner:', block?.ownerNameSnapshot, err && (err.stack || err));
+      throw err;
+    }
   }
 
   // Update run with standard file name

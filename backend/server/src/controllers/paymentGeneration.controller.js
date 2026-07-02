@@ -37,6 +37,8 @@ export async function saveRunHandler(req, res, next) {
     const result = await savePaymentRun(req.body, req.user);
     res.status(201).json(result);
   } catch (error) {
+    // Log full error on server to aid debugging in deployed environments
+    console.error('[saveRunHandler] error saving payment run:', error && (error.stack || error));
     next(error);
   }
 }
