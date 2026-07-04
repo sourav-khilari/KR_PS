@@ -32,7 +32,7 @@ function rowClass(row) {
   return row.validationMessages.some((item) => item.severity === 'error') ? 'has-issue error-row' : 'has-issue warning-row';
 }
 
-export function ImportPreviewTable({ rows, onEditRow }) {
+export function ImportPreviewTable({ rows, onEditRow, onDeleteRow }) {
   return (
     <div className="table-shell">
       <table className="data-table">
@@ -77,9 +77,14 @@ export function ImportPreviewTable({ rows, onEditRow }) {
                 <td><span className={getStatusClass(row.approvalStatus || 'pending')}>{row.approvalStatus || 'pending'}</span></td>
                 <td>{issueSummary(row)}</td>
                 <td>
-                  <button type="button" onClick={() => onEditRow(row)}>
-                    Edit
-                  </button>
+                  <div className="action-group">
+                    <button type="button" onClick={() => onEditRow(row)}>
+                      Edit
+                    </button>
+                    <button type="button" className="secondary danger" onClick={() => onDeleteRow(row)}>
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             );

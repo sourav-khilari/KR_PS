@@ -894,6 +894,42 @@ tr.has-issue {
   max-width: 220px;
 }
 
+.warning-summary-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.warning-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.warning-summary-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, #fffbeb 0%, #fff7ed 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.warning-summary-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.warning-summary-rows {
+  margin: 0;
+  color: #7c2d12;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .checkbox-pill {
   display: inline-flex;
   align-items: center;

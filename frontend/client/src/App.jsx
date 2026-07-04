@@ -34,6 +34,36 @@ function Workspace() {
   const rows = preview?.rows || [];
   const messages = useMemo(() => rows.flatMap((row) => row.validationMessages || []), [rows]);
   const hasPreview = rows.length > 0;
+  const warningSummary = useMemo(() => {
+    const grouped = new Map();
+
+    rows.forEach((row) => {
+      const rowNumber = row?.sourceRowNumber || row?.rowNumber || 'n/a';
+      (row.validationMessages || []).forEach((message) => {
+        if (message.severity !== 'warning') return;
+
+        const key = message.message || message.field || 'warning';
+        const existing = grouped.get(key) || {
+          message: message.message || 'Warning',
+          field: message.field,
+          rows: []
+        };
+
+        if (!existing.rows.includes(rowNumber)) {
+          existing.rows.push(rowNumber);
+        }
+
+        grouped.set(key, existing);
+      });
+    });
+
+    return Array.from(grouped.values())
+      .map((item) => ({
+        ...item,
+        rows: [...item.rows].sort((left, right) => Number(left || 0) - Number(right || 0))
+      }))
+      .sort((left, right) => left.message.localeCompare(right.message));
+  }, [rows]);
 
   function getSelectedTransportCompany(id) {
     return transportCompanies.find((item) => item._id === id) || null;
@@ -128,6 +158,17 @@ function Workspace() {
         : currentRow
     )));
     setSelectedRow(null);
+  }
+
+  function handleDeleteRow(row) {
+    if (!preview) return;
+
+    const rowKey = getPreviewRowKey(row);
+    const shouldDelete = window.confirm('Remove this row from the preview? It will not be saved.');
+    if (!shouldDelete) return;
+
+    updatePreviewRows((currentRows) => currentRows.filter((currentRow) => getPreviewRowKey(currentRow) !== rowKey));
+    setSelectedRow((current) => (current && getPreviewRowKey(current) === rowKey ? null : current));
   }
 
   async function handleApproveRow(row) {
@@ -318,12 +359,38 @@ function Workspace() {
                   </div>
                   <div className="summary-grid preview-meta">
                     <span className="summary-pill">{preview.session?.rowCount ?? preview.rowCount} parsed rows</span>
+                    <span className="summary-pill">Warnings: {stats.warnings}</span>
+                    <span className="summary-pill">Errors: {stats.errors}</span>
                     <span className="summary-pill">Transport: {preview.metadata?.transportCompany?.companyName || ''}</span>
                     <span className="summary-pill">Client: {preview.metadata?.clientCompany?.companyName || ''}</span>
                     <span className="summary-pill">Plant: {preview.metadata?.plant?.plantName || ''}</span>
                   </div>
                 </section>
-                <ImportPreviewTable rows={rows} onEditRow={handleEditRow} />
+                <section className="panel-surface warning-summary-panel">
+                  <div className="section-header compact">
+                    <div>
+                      <p className="eyebrow">Warning summary</p>
+                      <h3>Unique warnings by row</h3>
+                    </div>
+                    <span className="summary-pill">{warningSummary.length} unique warning group{warningSummary.length === 1 ? '' : 's'}</span>
+                  </div>
+                  {warningSummary.length ? (
+                    <div className="warning-summary-grid">
+                      {warningSummary.map((item) => (
+                        <div key={`${item.field || 'warning'}-${item.message}`} className="warning-summary-item" title={`Rows: ${item.rows.join(', ')}`}>
+                          <div className="warning-summary-header">
+                            <span className="pill warning">{item.message}</span>
+                            <span className="pill neutral">{item.rows.length} row{item.rows.length === 1 ? '' : 's'}</span>
+                          </div>
+                          <p className="warning-summary-rows">Rows: {item.rows.join(', ')}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="table-placeholder">No warning issues are present in the current preview.</p>
+                  )}
+                </section>
+                <ImportPreviewTable rows={rows} onEditRow={handleEditRow} onDeleteRow={handleDeleteRow} />
                 <ImportRowEditor
                   row={selectedRow}
                   onClose={() => setSelectedRow(null)}
