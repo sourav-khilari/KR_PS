@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export function PaymentPreview({ preview, onSave, onCancel, saving }) {
   const [blocks, setBlocks] = useState(preview.blocks || []);
@@ -198,6 +198,32 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
     overallTotals.totalRfidGps
   );
 
+  const ownerSummary = useMemo(() => {
+    return blocks
+      .map((block) => ({
+        ownerName: block.ownerNameSnapshot || 'Unknown owner',
+        rowCount: block.rows?.length || 0,
+        warnings: block.warnings || []
+      }))
+      .sort((left, right) => left.ownerName.localeCompare(right.ownerName));
+  }, [blocks]);
+
+  const warningSummary = useMemo(() => {
+    const grouped = new Map();
+
+    blocks.forEach((block) => {
+      (block.warnings || []).forEach((warning) => {
+        const existing = grouped.get(warning) || { message: warning, owners: [] };
+        if (!existing.owners.includes(block.ownerNameSnapshot || 'Unknown owner')) {
+          existing.owners.push(block.ownerNameSnapshot || 'Unknown owner');
+        }
+        grouped.set(warning, existing);
+      });
+    });
+
+    return Array.from(grouped.values()).sort((left, right) => left.message.localeCompare(right.message));
+  }, [blocks]);
+
   return (
     <div className="payment-preview-container">
       <header className="preview-action-header">
@@ -396,6 +422,49 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
 
       <footer className="overall-summary-card">
         <h3>Payout Generation Summary</h3>
+        <section className="panel-surface warning-summary-panel">
+          <div className="section-header compact">
+            <div>
+              <p className="eyebrow">Preview insights</p>
+              <h3>Owners and warnings overview</h3>
+            </div>
+            <span className="summary-pill">{ownerSummary.length} owner{ownerSummary.length === 1 ? '' : 's'}</span>
+          </div>
+          <div className="warning-summary-grid">
+            <div className="warning-summary-item">
+              <div className="warning-summary-header">
+                <span className="pill neutral">Owners</span>
+                <span className="pill neutral">{ownerSummary.length}</span>
+              </div>
+              <ul className="message-list">
+                {ownerSummary.map((item) => (
+                  <li key={item.ownerName} title={`${item.rowCount} rows`}>
+                    <span className="pill neutral">{item.ownerName}</span>
+                    <span className="warning-summary-rows">{item.rowCount} row{item.rowCount === 1 ? '' : 's'}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="warning-summary-item">
+              <div className="warning-summary-header">
+                <span className="pill warning">Warnings</span>
+                <span className="pill neutral">{warningSummary.length}</span>
+              </div>
+              {warningSummary.length ? (
+                <ul className="message-list">
+                  {warningSummary.map((item) => (
+                    <li key={item.message} title={item.owners.join(', ')}>
+                      <span className="pill warning">{item.message}</span>
+                      <span className="warning-summary-rows">Owners: {item.owners.join(', ')}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="table-placeholder">No warning issues are present in the current payout preview.</p>
+              )}
+            </div>
+          </div>
+        </section>
         <div className="overall-stats-grid">
           <div>
             <span>Total Qty</span>

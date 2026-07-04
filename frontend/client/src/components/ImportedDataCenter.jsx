@@ -231,6 +231,56 @@ export function ImportedDataCenter() {
     return { total, approved, warnings, errors, duplicates };
   }, [rows]);
 
+  const warningSummary = useMemo(() => {
+    const grouped = new Map();
+
+    rows.forEach((row) => {
+      const rowNumber = row?.sourceRowNumber || row?.rowNumber || 'n/a';
+      (row.validationMessages || []).forEach((message) => {
+        if (message.severity !== 'warning') return;
+
+        const key = message.message || message.field || 'warning';
+        const existing = grouped.get(key) || {
+          message: message.message || 'Warning',
+          field: message.field,
+          rows: []
+        };
+
+        if (!existing.rows.includes(rowNumber)) {
+          existing.rows.push(rowNumber);
+        }
+
+        grouped.set(key, existing);
+      });
+    });
+
+    return Array.from(grouped.values())
+      .map((item) => ({
+        ...item,
+        rows: [...item.rows].sort((left, right) => Number(left || 0) - Number(right || 0))
+      }))
+      .sort((left, right) => left.message.localeCompare(right.message));
+  }, [rows]);
+
+  const ownerRowSummary = useMemo(() => {
+    const grouped = new Map();
+
+    rows.forEach((row) => {
+      const ownerName = row.normalizedRow?.truckOwnerName || row.truckOwnerName || 'Unassigned';
+      const existing = grouped.get(ownerName) || { ownerName, rowCount: 0, rows: [] };
+      existing.rowCount += 1;
+      existing.rows.push(row?.sourceRowNumber || row?.rowNumber || 'n/a');
+      grouped.set(ownerName, existing);
+    });
+
+    return Array.from(grouped.values())
+      .map((item) => ({
+        ...item,
+        rows: [...item.rows].sort((left, right) => Number(left || 0) - Number(right || 0))
+      }))
+      .sort((left, right) => left.ownerName.localeCompare(right.ownerName));
+  }, [rows]);
+
   function handleSort(columnKey) {
     setSortConfig((current) => ({
       key: columnKey,
@@ -523,6 +573,54 @@ export function ImportedDataCenter() {
       </div>
 
       {error && <div className="alert error">{error}</div>}
+
+      <section className="panel-surface warning-summary-panel">
+        <div className="section-header compact">
+          <div>
+            <p className="eyebrow">Preview insights</p>
+            <h3>Unique warnings and owner row counts</h3>
+          </div>
+          <span className="summary-pill">{warningSummary.length} warning group{warningSummary.length === 1 ? '' : 's'}</span>
+        </div>
+        <div className="warning-summary-grid">
+          <div className="warning-summary-item">
+            <div className="warning-summary-header">
+              <span className="pill warning">Warnings</span>
+              <span className="pill neutral">{warningSummary.length}</span>
+            </div>
+            {warningSummary.length ? (
+              <ul className="message-list">
+                {warningSummary.map((item) => (
+                  <li key={`${item.field || 'warning'}-${item.message}`} title={`Rows: ${item.rows.join(', ')}`}>
+                    <span className="pill warning">{item.message}</span>
+                    <span className="warning-summary-rows">Rows: {item.rows.join(', ')}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="table-placeholder">No warning issues are present in the current data set.</p>
+            )}
+          </div>
+          <div className="warning-summary-item">
+            <div className="warning-summary-header">
+              <span className="pill neutral">Owners</span>
+              <span className="pill neutral">{ownerRowSummary.length}</span>
+            </div>
+            {ownerRowSummary.length ? (
+              <ul className="message-list">
+                {ownerRowSummary.map((item) => (
+                  <li key={item.ownerName} title={`${item.rowCount} rows`}>
+                    <span className="pill neutral">{item.ownerName}</span>
+                    <span className="warning-summary-rows">{item.rowCount} row{item.rowCount === 1 ? '' : 's'}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="table-placeholder">No owner row counts available yet.</p>
+            )}
+          </div>
+        </div>
+      </section>
 
       <DataCenterFilterPanel
         filters={filters}
