@@ -104,4 +104,37 @@ describe('commission resolver', () => {
     });
     expect(result.amount).toBe(800);
   });
+
+  it('resolves a wildcard truck-wise rule matching any client/plant and supports percentage', () => {
+    // Key has empty string fields for client-id and plant-id
+    const wildcardKey = 'transport-1|||JH10DE2279';
+    const result = resolveCommissionForRow({
+      owner: owner({
+        commissionType: 'truck_wise',
+        commissionValue: 0,
+        truckWiseCommissionMap: {
+          [wildcardKey]: { type: 'percentage', value: 3 }
+        }
+      }),
+      sourceRow: context
+    });
+    // 3% of 40000 = 1200
+    expect(result).toMatchObject({ type: 'percentage', value: 3, amount: 1200, source: 'Truck Rule' });
+  });
+
+  it('resolves a wildcard truck-wise rule with legacy numeric value matching any client/plant', () => {
+    // Key has empty string fields for client-id and plant-id
+    const wildcardKey = 'transport-1|||JH10DE2279';
+    const result = resolveCommissionForRow({
+      owner: owner({
+        commissionType: 'truck_wise',
+        commissionValue: 0,
+        truckWiseCommissionMap: {
+          [wildcardKey]: 1500
+        }
+      }),
+      sourceRow: context
+    });
+    expect(result).toMatchObject({ type: 'fixed', value: 1500, amount: 1500, source: 'Truck Rule' });
+  });
 });

@@ -4,7 +4,7 @@ import { approveImportRow, deleteImportRow, listClientCompanies, listOwnersApi, 
 import { DataCenterFilterPanel } from './DataCenterFilterPanel.jsx';
 import { DataTableToolbar } from './DataTableToolbar.jsx';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+import { API_BASE_URL } from '../config/env.js';
 const IMPORT_ROW_FIELDS = [
   { key: 'invNo', label: 'Invoice Number' },
   { key: 'invDate', label: 'Invoice Date', type: 'date' },

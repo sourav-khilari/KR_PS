@@ -27,6 +27,7 @@ export function OwnerEditDrawer({ owner, onClose, onSave, token }) {
   const [newRulePlantId, setNewRulePlantId] = useState('');
   const [newRuleTruckNo, setNewRuleTruckNo] = useState('');
   const [newRuleCommission, setNewRuleCommission] = useState('');
+  const [newRuleType, setNewRuleType] = useState('fixed');
   const [panError, setPanError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -126,13 +127,22 @@ export function OwnerEditDrawer({ owner, onClose, onSave, token }) {
 
   function handleMapValueChange(ruleKey, val) {
     const parsed = val === '' ? 0 : Number(val);
-    setForm(prev => ({
-      ...prev,
-      truckWiseCommissionMap: {
-        ...prev.truckWiseCommissionMap,
-        [ruleKey]: parsed
+    setForm(prev => {
+      const existingVal = prev.truckWiseCommissionMap[ruleKey];
+      let updatedVal;
+      if (existingVal && typeof existingVal === 'object') {
+        updatedVal = { ...existingVal, value: parsed };
+      } else {
+        updatedVal = parsed;
       }
-    }));
+      return {
+        ...prev,
+        truckWiseCommissionMap: {
+          ...prev.truckWiseCommissionMap,
+          [ruleKey]: updatedVal
+        }
+      };
+    });
   }
 
   function handleRemoveMapKey(ruleKey) {
@@ -150,21 +160,26 @@ export function OwnerEditDrawer({ owner, onClose, onSave, token }) {
     if (!newRuleTruckNo.trim()) return;
     const normTruck = newRuleTruckNo.toUpperCase().replace(/\s+/g, '');
     const val = newRuleCommission === '' ? 0 : Number(newRuleCommission);
-    const contextKey = [newRuleTransportId, newRuleClientId, newRulePlantId, normTruck]
-      .filter(Boolean)
-      .join('|');
-
-    if (!contextKey) return;
+    const contextKey = [
+      newRuleTransportId || '',
+      newRuleClientId || '',
+      newRulePlantId || '',
+      normTruck
+    ].join('|');
 
     setForm(prev => ({
       ...prev,
       truckWiseCommissionMap: {
         ...prev.truckWiseCommissionMap,
-        [contextKey]: val
+        [contextKey]: {
+          type: newRuleType,
+          value: val
+        }
       }
     }));
     setNewRuleTruckNo('');
     setNewRuleCommission('');
+    setNewRuleType('fixed');
   }
 
   function getRuleDisplay(ruleKey) {
@@ -175,9 +190,9 @@ export function OwnerEditDrawer({ owner, onClose, onSave, token }) {
     const truck = parts[3] || '';
 
     return [
-      transport?.companyName || parts[0] || 'Any Transport',
-      client?.companyName || parts[1] || 'Any Client',
-      plant?.plantName || parts[2] || 'Any Plant',
+      transport?.companyName || 'Any Transport',
+      client?.companyName || 'Any Client',
+      plant?.plantName || 'Any Plant',
       truck || 'Any Truck'
     ].join(' • ');
   }
@@ -344,9 +359,13 @@ export function OwnerEditDrawer({ owner, onClose, onSave, token }) {
                           <option value="">Select Truck</option>
                           {trucks.map((truck) => <option key={truck._id} value={truck.truckNumber}>{truck.truckNumber}</option>)}
                         </select>
+                        <select value={newRuleType} onChange={(e) => setNewRuleType(e.target.value)} style={{ minWidth: '120px' }}>
+                          <option value="fixed">Fixed</option>
+                          <option value="percentage">Percentage</option>
+                        </select>
                         <input
                           type="number"
-                          placeholder="Commission"
+                          placeholder={newRuleType === 'percentage' ? 'Commission %' : 'Commission ₹'}
                           value={newRuleCommission}
                           onChange={(e) => setNewRuleCommission(e.target.value)}
                           style={{ minWidth: '110px' }}
@@ -366,12 +385,17 @@ export function OwnerEditDrawer({ owner, onClose, onSave, token }) {
                       ) : (
                         Object.keys(form.truckWiseCommissionMap || {}).map((ruleKey) => {
                           const mapVal = form.truckWiseCommissionMap[ruleKey] ?? '';
+                          const isObj = mapVal && typeof mapVal === 'object';
+                          const type = isObj ? mapVal.type : 'fixed';
+                          const value = isObj ? mapVal.value : mapVal;
                           return (
                             <div className="truck-commission-row" key={ruleKey} style={{ flexWrap: 'wrap' }}>
-                              <span style={{ color: '#38bdf8', fontWeight: 'bold', minWidth: '320px' }}>{getRuleDisplay(ruleKey)}</span>
+                              <span style={{ color: '#38bdf8', fontWeight: 'bold', minWidth: '320px' }}>
+                                {getRuleDisplay(ruleKey)} ({type === 'percentage' ? `${value}%` : `₹${value}`})
+                              </span>
                               <input
                                 type="number"
-                                value={mapVal}
+                                value={value}
                                 onChange={(e) => handleMapValueChange(ruleKey, e.target.value)}
                                 style={{ minWidth: '110px' }}
                               />

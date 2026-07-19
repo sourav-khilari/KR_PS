@@ -99,7 +99,7 @@ const ownerMasterSchema = new mongoose.Schema(
     },
     truckWiseCommissionMap: {
       type: Map,
-      of: Number,
+      of: mongoose.Schema.Types.Mixed,
       default: {}
     },
     createdBy: {

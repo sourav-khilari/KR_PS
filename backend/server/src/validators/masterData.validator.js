@@ -42,7 +42,14 @@ export function validateOwnerPayload(body = {}, options = {}) {
     Object.entries(body.truckWiseCommissionMap).forEach(([ruleKey, val]) => {
       const cleanedKey = normalizeText(ruleKey);
       if (cleanedKey) {
-        truckWiseCommissionMap[cleanedKey] = numberOrZero(val);
+        if (val && typeof val === 'object') {
+          truckWiseCommissionMap[cleanedKey] = {
+            type: val.type === 'percentage' ? 'percentage' : 'fixed',
+            value: numberOrZero(val.value)
+          };
+        } else {
+          truckWiseCommissionMap[cleanedKey] = numberOrZero(val);
+        }
       }
     });
   }

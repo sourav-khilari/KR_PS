@@ -19,21 +19,47 @@ function sameScope(rule, context) {
 }
 
 function findOwnerTruckRule(owner, context) {
-  const exactKey = [
-    context.transportCompanyId,
-    context.clientCompanyId,
-    context.plantId,
-    context.truckNumber
-  ].join('|');
-
-  const entry = ownerTruckRules(owner).find(([key]) => {
+  const entries = ownerTruckRules(owner);
+  const matches = entries.filter(([key]) => {
     const parts = String(key).split('|');
     if (parts.length !== 4) return false;
-    return [parts[0], parts[1], parts[2], normalizeTruckNumber(parts[3])].join('|') === exactKey;
+
+    const ruleTransport = parts[0];
+    const ruleClient = parts[1];
+    const rulePlant = parts[2];
+    const ruleTruck = normalizeTruckNumber(parts[3]);
+
+    if (ruleTruck !== context.truckNumber) return false;
+    if (ruleTransport && ruleTransport !== context.transportCompanyId) return false;
+    if (ruleClient && ruleClient !== context.clientCompanyId) return false;
+    if (rulePlant && rulePlant !== context.plantId) return false;
+
+    return true;
   });
 
-  if (!entry) return null;
-  return { commissionType: 'fixed', commissionValue: Number(entry[1]), ruleKey: entry[0] };
+  if (matches.length === 0) return null;
+
+  matches.sort((a, b) => {
+    const partsA = String(a[0]).split('|');
+    const partsB = String(b[0]).split('|');
+    const scoreA = (partsA[0] ? 1 : 0) + (partsA[1] ? 1 : 0) + (partsA[2] ? 1 : 0);
+    const scoreB = (partsB[0] ? 1 : 0) + (partsB[1] ? 1 : 0) + (partsB[2] ? 1 : 0);
+    return scoreB - scoreA;
+  });
+
+  const entry = matches[0];
+  const val = entry[1];
+  let type = 'fixed';
+  let value = 0;
+
+  if (val && typeof val === 'object') {
+    type = val.type === 'percentage' ? 'percentage' : 'fixed';
+    value = Number(val.value ?? 0);
+  } else {
+    value = Number(val ?? 0);
+  }
+
+  return { commissionType: type, commissionValue: value, ruleKey: entry[0] };
 }
 
 function debugResolution(context, result, repeatedTrip, repeatedTripIndex) {

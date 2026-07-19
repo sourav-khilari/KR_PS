@@ -4,7 +4,8 @@ import MasterManagementTable from '../../components/MasterManagementTable.jsx';
 import MasterFormModal from '../../components/MasterFormModal.jsx';
 import '../../styles.css';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+import { API_BASE_URL } from '../../config/env.js';
+const API_URL = API_BASE_URL;
 
 const TRANSPORT_COLUMNS = [
   { key: 'companyName', label: 'Company Name', sortable: true },
