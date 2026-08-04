@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export function PaymentPreview({ preview, onSave, onCancel, saving }) {
   const [blocks, setBlocks] = useState(preview.blocks || []);
