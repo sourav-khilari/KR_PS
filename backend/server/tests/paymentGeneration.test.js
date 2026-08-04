@@ -172,7 +172,7 @@ describe('Payment generation workflow & business calculations', () => {
     expect(block.summaryValues.taxableValue).toBe(49100);
     const expectedCgst = Math.round(49100 * 0.09 * 100) / 100;
     expect(block.summaryValues.cgst).toBeCloseTo(expectedCgst, 0);
-    expect(block.summaryValues.netPayable).toBe(46447);
+    expect(block.summaryValues.netPayable).toBe(46147);
   });
 
   it('queries payment preview rows by transport, client, plant, and date range on the server', async () => {
@@ -252,9 +252,10 @@ describe('Payment generation workflow & business calculations', () => {
     expect(block.summaryValues.gstApplicable).toBe(false);
     expect(block.summaryValues.cgst).toBe(0);
     expect(block.summaryValues.sgst).toBe(0);
-    expect(block.summaryRows).toHaveLength(7);
+
+    expect(block.summaryRows).toHaveLength(8);
     expect(block.summaryRows.map((item) => item.label)).not.toContain('ADD: CGST @9%');
-    expect(block.summaryValues.netPayable).toBe(Math.round(29100 - 2000 - 5000 - 0 - 291));
+    expect(block.summaryValues.netPayable).toBe(Math.round(29100 - 2000 - 5000 - 0 - 150 - 291));
   });
 
   // ── Test 2: Commission Master rule resolution order ────────────────────────

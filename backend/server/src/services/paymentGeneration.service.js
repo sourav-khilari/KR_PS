@@ -65,6 +65,7 @@ function buildSummaryRows({
   lessDiesel,
   lessCashAdvance,
   lessShortage,
+  lessRfidGps,
   lessTds,
   roundOff,
   netPayable
@@ -78,6 +79,7 @@ function buildSummaryRows({
       { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: lessDiesel },
       { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: lessCashAdvance },
       { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: lessShortage },
+      { templateRow: 16, key: 'lessRfidGps', label: 'LESS : RFID & GPS ', value: lessRfidGps },
       { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: lessTds },
       { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: roundOff },
       { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: netPayable }
@@ -89,6 +91,7 @@ function buildSummaryRows({
     { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: lessDiesel },
     { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: lessCashAdvance },
     { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: lessShortage },
+    { templateRow: 16, key: 'lessRfidGps', label: 'LESS : RFID & GPS ', value: lessRfidGps },
     { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: lessTds },
     { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: roundOff },
     { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: netPayable }
@@ -343,9 +346,10 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
     const lessDiesel = roundedDiesel;
     const lessCashAdvance = Number((blockCashAdvance).toFixed(2));
     const lessShortage = Number((blockShortage).toFixed(2));
+    const lessRfidGps = Number((blockRfidGps).toFixed(2));
     const lessTds = Number(Math.round(taxableValue * (owner.tdsPercentage / 100)));
 
-    const unroundedNetPayable = (gstApplicable ? netBillAmount : taxableValue) - lessDiesel - lessCashAdvance - lessShortage - lessTds;
+    const unroundedNetPayable = (gstApplicable ? netBillAmount : taxableValue) - lessDiesel - lessCashAdvance - lessShortage - lessRfidGps - lessTds;
 
     // Net payable is already rounded to whole rupees by existing business rule
     const netPayable = Math.round(unroundedNetPayable);
@@ -357,6 +361,7 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
     const summaryLessDiesel = toNumber(lessDiesel);
     const summaryLessCashAdvance = toNumber(lessCashAdvance);
     const summaryLessShortage = toNumber(lessShortage);
+    const summaryLessRfidGps = toNumber(lessRfidGps);
     const summaryLessTds = toNumber(lessTds);
     const summaryCgst = toNumber(cgst);
     const summarySgst = toNumber(sgst);
@@ -374,6 +379,7 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
       lessDiesel: summaryLessDiesel,
       lessCashAdvance: summaryLessCashAdvance,
       lessShortage: summaryLessShortage,
+      lessRfidGps: summaryLessRfidGps,
       lessTds: summaryLessTds,
       roundOff: summaryRoundOff,
       netPayable: summaryNetPayable
@@ -425,6 +431,7 @@ export async function getPaymentPreview({ startDate, endDate, ownerId, transport
         lessDiesel,
         lessCashAdvance,
         lessShortage,
+        lessRfidGps,
         lessTds,
         roundOff,
         netPayable

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 export function PaymentPreview({ preview, onSave, onCancel, saving }) {
   const [blocks, setBlocks] = useState(preview.blocks || []);
@@ -11,6 +11,7 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
         { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: summaryValues.lessDiesel || 0 },
         { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summaryValues.lessCashAdvance || 0 },
         { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: summaryValues.lessShortage || 0 },
+        { templateRow: 16, key: 'lessRfidGps', label: 'LESS : RFID & GPS ', value: summaryValues.lessRfidGps || 0 },
         { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: summaryValues.lessTds || 0 },
         { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: summaryValues.roundOff || 0 },
         { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: summaryValues.netPayable || 0 }
@@ -25,6 +26,7 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
       { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: summaryValues.lessDiesel || 0 },
       { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summaryValues.lessCashAdvance || 0 },
       { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: summaryValues.lessShortage || 0 },
+      { templateRow: 16, key: 'lessRfidGps', label: 'LESS : RFID & GPS ', value: summaryValues.lessRfidGps || 0 },
       { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: summaryValues.lessTds || 0 },
       { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: summaryValues.roundOff || 0 },
       { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: summaryValues.netPayable || 0 }
@@ -84,9 +86,10 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
     const lessDiesel = totalDiesel;
     const lessCashAdvance = totalCashAdvance;
     const lessShortage = totalShortage;
+    const lessRfidGps = totalRfidGps;
     const lessTds = Math.round(taxableValue * (tdsRate / 100));
 
-    const unroundedNetPayable = (gstApplicable ? netBillAmount : taxableValue) - lessDiesel - lessCashAdvance - lessShortage - lessTds;
+    const unroundedNetPayable = (gstApplicable ? netBillAmount : taxableValue) - lessDiesel - lessCashAdvance - lessShortage - lessRfidGps - lessTds;
     const netPayable = Math.round(unroundedNetPayable);
     const roundOff = netPayable - unroundedNetPayable;
     const summaryRows = buildSummaryRows({
@@ -100,6 +103,7 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
       lessDiesel,
       lessCashAdvance,
       lessShortage,
+      lessRfidGps,
       lessTds,
       roundOff,
       netPayable
@@ -135,6 +139,7 @@ export function PaymentPreview({ preview, onSave, onCancel, saving }) {
         lessDiesel,
         lessCashAdvance,
         lessShortage,
+        lessRfidGps,
         lessTds,
         roundOff,
         netPayable

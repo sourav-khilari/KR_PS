@@ -76,6 +76,7 @@ const paymentBlockSchema = new mongoose.Schema(
       lessDiesel: { type: Number, default: 0 },
       lessCashAdvance: { type: Number, default: 0 },
       lessShortage: { type: Number, default: 0 },
+      lessRfidGps: { type: Number, default: 0 },
       lessTds: { type: Number, default: 0 },
       roundOff: { type: Number, default: 0 },
       netPayable: { type: Number, default: 0 }

@@ -150,6 +150,9 @@ function renderSummaryRows(templateSheet, targetSheet, startRow, summaryRows) {
     const targetRowNumber = startRow + index;
     copyRow(templateSheet, targetSheet, rowSpec.templateRow, targetRowNumber);
     copyRowMerges(templateSheet, targetSheet, rowSpec.templateRow, targetRowNumber);
+    if (rowSpec.label) {
+      targetSheet.getCell(targetRowNumber, 3).value = rowSpec.label;
+    }
     setNumber(targetSheet.getCell(targetRowNumber, 4), rowSpec.value);
   });
 }
@@ -162,6 +165,7 @@ function legacySummaryRows(block) {
       { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: summary.lessDiesel || 0 },
       { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summary.lessCashAdvance || 0 },
       { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: summary.lessShortage || 0 },
+      { templateRow: 16, key: 'lessRfidGps', label: 'LESS : RFID & GPS ', value: summary.lessRfidGps || 0 },
       { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: summary.lessTds || 0 },
       { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: summary.roundOff || 0 },
       { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: summary.netPayable || 0 }
@@ -176,6 +180,7 @@ function legacySummaryRows(block) {
     { templateRow: 14, key: 'lessDiesel', label: 'LESS: DIESEL', value: summary.lessDiesel || 0 },
     { templateRow: 15, key: 'lessCashAdvance', label: 'LESS: CASH ADVANCE', value: summary.lessCashAdvance || 0 },
     { templateRow: 16, key: 'lessShortage', label: 'LESS: SHORTAGE', value: summary.lessShortage || 0 },
+    { templateRow: 16, key: 'lessRfidGps', label: 'LESS : RFID & GPS ', value: summary.lessRfidGps || 0 },
     { templateRow: 17, key: 'lessTds', label: 'LESS: TDS', value: summary.lessTds || 0 },
     { templateRow: 18, key: 'roundOff', label: 'ROUND OFF', value: summary.roundOff || 0 },
     { templateRow: 19, key: 'netPayable', label: 'NET PAYABLE', value: summary.netPayable || 0 }
